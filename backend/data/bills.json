@@ -17,5 +17,19 @@
     "billType": "customer_bill",
     "paid": false,
     "date": "2026-04-04T17:35:39.931Z"
+  },
+  {
+    "billId": "185f7305-6ac6-475b-a219-204dc45363d8",
+    "items": [
+      {
+        "name": "soaf",
+        "qty": 20,
+        "price": "20"
+      }
+    ],
+    "total": 400,
+    "billType": "stock_bill",
+    "paid": false,
+    "date": "2026-04-05T11:04:05.825Z"
   }
 ]

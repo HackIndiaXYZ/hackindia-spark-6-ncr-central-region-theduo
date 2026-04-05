@@ -1144,189 +1144,152 @@
 
   </main>
 
-  <script>
-    const inventoryItems = [
-      { name:"Maggi", category:"Snacks", qty:12, status:"low", updated:"2 hours ago" },
-      { name:"Coke", category:"Beverages", qty:20, status:"healthy", updated:"Today, 11:20 AM" },
-      { name:"Biscuit", category:"Grocery", qty:4, status:"low", updated:"Today, 09:15 AM" },
-      { name:"Chips", category:"Snacks", qty:0, status:"out", updated:"Yesterday" },
-      { name:"Milk", category:"Dairy", qty:8, status:"healthy", updated:"Today, 08:40 AM" },
-      { name:"Bread", category:"Bakery", qty:2, status:"low", updated:"1 hour ago" },
-      { name:"Soap", category:"Essentials", qty:16, status:"healthy", updated:"Today, 10:02 AM" },
-      { name:"Shampoo", category:"Personal Care", qty:0, status:"out", updated:"2 days ago" }
-    ];
+ <script>
+let inventoryItems = [];
 
-    const tableBody = document.getElementById("inventoryTableBody");
-    const restockList = document.getElementById("restockList");
-    const searchInput = document.getElementById("searchInput");
-    const sortSelect = document.getElementById("sortSelect");
-    const filterButtons = document.querySelectorAll(".filter-chip");
+const tableBody = document.getElementById("inventoryTableBody");
+const restockList = document.getElementById("restockList");
+const searchInput = document.getElementById("searchInput");
+const sortSelect = document.getElementById("sortSelect");
+const filterButtons = document.querySelectorAll(".filter-chip");
 
-    let currentFilter = "all";
+let currentFilter = "all";
 
-    function getStatusBadge(status){
-      if(status === "healthy"){
-        return `<span class="status-badge status-healthy">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Healthy
-        </span>`;
-      }
-
-      if(status === "low"){
-        return `<span class="status-badge status-low">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="17" r="1" fill="currentColor"/>
-          </svg>
-          Low Stock
-        </span>`;
-      }
-
-      return `<span class="status-badge status-out">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Out of Stock
-      </span>`;
-    }
-
-    function getItemIcon(category){
-      return `
-        <div class="item-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
-            <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
-            <path d="M12 13V20" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </div>
-      `;
-    }
-
-    function renderTable(){
-      let items = [...inventoryItems];
-
-      const searchTerm = searchInput.value.toLowerCase().trim();
-
-      if(currentFilter !== "all"){
-        items = items.filter(item => item.status === currentFilter);
-      }
-
-      if(searchTerm){
-        items = items.filter(item => item.name.toLowerCase().includes(searchTerm));
-      }
-
-      const sortValue = sortSelect.value;
-
-      if(sortValue === "high"){
-        items.sort((a,b) => b.qty - a.qty);
-      } else if(sortValue === "low"){
-        items.sort((a,b) => a.qty - b.qty);
-      }
-
-      tableBody.innerHTML = items.map(item => `
-        <tr>
-          <td>
-            <div class="item-cell">
-              ${getItemIcon(item.category)}
-              <div>
-                <div class="item-name">${item.name}</div>
-                <div class="item-meta">Tracked through ScanBill billing</div>
-              </div>
-            </div>
-          </td>
-
-          <td>
-            <span class="category-chip">${item.category}</span>
-          </td>
-
-          <td>
-            <div class="qty-value">${item.qty}</div>
-            <div class="qty-sub">units available</div>
-          </td>
-
-          <td>${getStatusBadge(item.status)}</td>
-
-          <td>
-            <div class="last-updated">${item.updated}</div>
-          </td>
-
-          <td>
-            <div class="row-actions">
-              <button class="btn btn-primary btn-sm" onclick="updateStock('${item.name}')">Update Stock</button>
-              <button class="btn btn-secondary btn-sm" onclick="editItem('${item.name}')">Edit Item</button>
-              <button class="btn btn-secondary btn-sm" onclick="viewDetails('${item.name}')">View Details</button>
-            </div>
-          </td>
-        </tr>
-      `).join("");
-
-      renderRestock(items);
-    }
-
-    function renderRestock(items){
-      const lowItems = inventoryItems.filter(item => item.status === "low" || item.status === "out");
-
-      restockList.innerHTML = lowItems.slice(0,3).map(item => `
-        <div class="restock-item">
-          <div class="restock-left">
-            <div class="restock-dot"></div>
-            <div>
-              <div class="restock-item-name">${item.name}</div>
-              <div class="restock-item-sub">
-                ${item.status === "out" ? "Out of stock — restock immediately" : `${item.qty} units left — running low`}
-              </div>
-            </div>
-          </div>
-
-          <button class="btn btn-primary btn-sm" onclick="restockItem('${item.name}')">Restock</button>
-        </div>
-      `).join("");
-    }
-
-    filterButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        filterButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentFilter = btn.dataset.filter;
-        renderTable();
-      });
-    });
-
-    searchInput.addEventListener("input", renderTable);
-    sortSelect.addEventListener("change", renderTable);
-
-    function addItem(){
-      alert("Add Item action simulated.");
-    }
-
-    function updateStock(name){
-      alert(`Update Stock clicked for ${name}`);
-    }
-
-    function editItem(name){
-      alert(`Edit Item clicked for ${name}`);
-    }
-
-    function viewDetails(name){
-      alert(`Viewing details for ${name}`);
-    }
-
-    function restockItem(name){
-      alert(`Restock action started for ${name}`);
-    }
-
-    renderTable();
-  </script>
-  <script>
+// 🔥 LOAD DATA FROM BACKEND
 async function loadInventory() {
   const res = await fetch("http://localhost:5000/inventory");
   const data = await res.json();
 
-  console.log(data);
+  inventoryItems = data.map(item => ({
+    name: item.name,
+    category: "General",
+    qty: item.quantity,
+    status:
+      item.quantity === 0
+        ? "out"
+        : item.quantity < 5
+        ? "low"
+        : "healthy",
+    updated: "Now"
+  }));
+
+  renderTable();
 }
+
+function getStatusBadge(status){
+  if(status === "healthy"){
+    return `<span class="status-badge status-healthy">✔ Healthy</span>`;
+  }
+  if(status === "low"){
+    return `<span class="status-badge status-low">⚠ Low Stock</span>`;
+  }
+  return `<span class="status-badge status-out">✖ Out of Stock</span>`;
+}
+
+function renderTable(){
+  let items = [...inventoryItems];
+
+  const searchTerm = searchInput.value.toLowerCase();
+
+  if(currentFilter !== "all"){
+    items = items.filter(item => item.status === currentFilter);
+  }
+
+  if(searchTerm){
+    items = items.filter(item => item.name.toLowerCase().includes(searchTerm));
+  }
+
+  if(sortSelect.value === "high"){
+    items.sort((a,b) => b.qty - a.qty);
+  } else if(sortSelect.value === "low"){
+    items.sort((a,b) => a.qty - b.qty);
+  }
+
+  tableBody.innerHTML = items.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.category}</td>
+      <td>${item.qty}</td>
+      <td>${getStatusBadge(item.status)}</td>
+      <td>${item.updated}</td>
+      <td>
+        <button onclick="updateStock('${item.name}')">Update</button>
+      </td>
+    </tr>
+  `).join("");
+
+  renderRestock();
+}
+
+function renderRestock(){
+  const lowItems = inventoryItems.filter(i => i.status !== "healthy");
+
+  restockList.innerHTML = lowItems.map(item => `
+    <div>${item.name} - ${item.qty}</div>
+  `).join("");
+}
+
+async function addItem(){
+  const name = prompt("Enter item name");
+  const price = prompt("Enter price");
+  const category = prompt("Enter category");
+  const qty = prompt("Enter quantity");
+
+  if(!name || !price || !qty) {
+    alert("Fill all fields");
+    return;
+  }
+
+  console.log("Sending:", { name, price, category, qty });
+
+  await fetch("http://localhost:5000/items/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      price,
+      category,
+      qty: Number(qty)
+    })
+  });
+
+  alert("Item added");
+  location.reload();
+}
+
+// 🔥 UPDATE STOCK (REAL API)
+async function updateStock(name){
+  const qty = prompt("Enter quantity to ADD");
+
+  if(!qty) return;
+
+  await fetch("http://localhost:5000/bill/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: [{ name, qty: Number(qty) }],
+      billType: "stock_bill"
+    })
+  });
+
+  alert("Stock updated");
+  loadInventory();
+}
+
+// FILTERS
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTable();
+  });
+});
+
+searchInput.addEventListener("input", renderTable);
+sortSelect.addEventListener("change", renderTable);
+
+// 🚀 START
 loadInventory();
 </script>
 
