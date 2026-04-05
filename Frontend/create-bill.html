@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Bill - ScanBill</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -12,25 +11,24 @@
 /* ================= DESIGN SYSTEM ================= */
 :root{
   --bg:#F8FBFF;
-  --white:#ffffff;
-
+  --white:#FFFFFF;
   --primary:#60A5FA;
   --primary2:#8B8CFF;
+  --indigo:#A5B4FC;
+  --lav:#DDD6FE;
 
   --text:#334155;
   --muted:#64748B;
-
   --border:#E2E8F0;
 
-  --radius:16px;
-  --radius-lg:20px;
-
   --shadow:0 10px 30px rgba(100,130,180,0.12);
+  --hover-shadow:0 16px 35px rgba(100,130,180,0.16);
+
+  --radius:20px;
 }
 
 /* ================= RESET ================= */
-*{margin:0;padding:0;box-sizing:border-box}
-
+*{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:"Inter",sans-serif;
   background:var(--bg);
@@ -39,13 +37,15 @@ body{
 
 /* ================= LAYOUT ================= */
 .page{
+  max-width:1300px;
+  margin:auto;
   padding:32px 40px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:28px;
+  grid-template-columns: 1.5fr 1fr;
+  gap:24px;
 }
 
 /* ================= HEADER ================= */
@@ -53,147 +53,181 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:28px;
+  margin-bottom:24px;
 }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.title h1{
+  font-size:28px;
+  font-weight:800;
+}
+.title p{
+  font-size:14px;
+  color:var(--muted);
 }
 
-.logo-box{
-  width:42px;height:42px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
-  display:flex;align-items:center;justify-content:center;
-}
-
-.title h2{font-size:20px}
-.title p{font-size:13px;color:var(--muted)}
-
-.header-right{
-  display:flex;
-  gap:12px;
-}
-
-/* ================= BUTTONS ================= */
 .btn{
-  height:42px;
-  padding:0 18px;
-  border-radius:12px;
-  display:flex;
+  padding:12px 18px;
+  border-radius:14px;
+  font-weight:600;
+  font-size:14px;
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-size:14px;
-  font-weight:600;
+  gap:8px;
   cursor:pointer;
+  transition:0.25s;
 }
 
 .btn-primary{
   background:linear-gradient(135deg,var(--primary),var(--primary2));
-  color:white;
+  color:#fff;
+  box-shadow:var(--shadow);
 }
+.btn-primary:hover{transform:translateY(-2px);}
 
 .btn-secondary{
-  background:white;
+  background:#fff;
   border:1px solid var(--border);
-}
-
-/* ================= CARDS ================= */
-.card{
-  background:white;
-  border-radius:var(--radius-lg);
-  padding:24px;
-  box-shadow:var(--shadow);
 }
 
 /* ================= BILL TYPE ================= */
 .bill-type{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:16px;
+  margin-bottom:24px;
 }
 
-.bill-option{
-  flex:1;
-  padding:18px;
-  border-radius:var(--radius);
+.bill-card{
+  padding:20px;
+  border-radius:18px;
   border:1px solid var(--border);
   cursor:pointer;
+  transition:0.3s;
 }
 
-.bill-option.active{
+.bill-card.active{
   border:2px solid var(--primary);
-  background:#EFF6FF;
+  background:linear-gradient(135deg,#EFF6FF,#F5F3FF);
 }
+
+.bill-card h3{font-size:16px;margin-bottom:6px;}
+.bill-card p{font-size:13px;color:var(--muted);}
 
 /* ================= SEARCH ================= */
 .search{
-  margin:20px 0;
+  margin-bottom:20px;
 }
 
 .search input{
   width:100%;
-  padding:12px;
-  border-radius:12px;
+  padding:14px;
+  border-radius:14px;
   border:1px solid var(--border);
 }
 
 /* ================= PRODUCTS ================= */
 .products{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:16px;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
 }
 
 .product{
-  padding:16px;
-  border-radius:var(--radius);
+  background:#fff;
+  padding:18px;
+  border-radius:18px;
   border:1px solid var(--border);
-  text-align:center;
-  transition:0.2s;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  height:170px;
+  transition:0.3s;
 }
 
 .product:hover{
-  transform:translateY(-3px);
+  transform:translateY(-4px);
+  box-shadow:var(--hover-shadow);
 }
 
-.qty{
+.product.selected{
+  border:2px solid var(--primary);
+}
+
+.product h4{font-size:15px;}
+.product span{font-size:13px;color:var(--muted);}
+
+/* ================= STEPPER ================= */
+.stepper{
   display:flex;
-  justify-content:center;
   align-items:center;
-  gap:8px;
+  justify-content:space-between;
   margin-top:10px;
 }
 
-.qty button{
-  width:28px;height:28px;
-  border:none;
+.stepper button{
+  width:30px;height:30px;
   border-radius:8px;
-  background:#E0F2FE;
-  cursor:pointer;
+  background:#EEF4FF;
+}
+
+.qty{
+  font-weight:600;
 }
 
 /* ================= SUMMARY ================= */
 .summary{
   position:sticky;
   top:20px;
+  background:#fff;
+  padding:24px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  height:fit-content;
 }
 
-.item-row{
+.summary h3{
+  margin-bottom:16px;
+}
+
+.items{
+  margin-bottom:16px;
+}
+
+.item{
   display:flex;
   justify-content:space-between;
-  margin-bottom:8px;
+  font-size:14px;
+  margin-bottom:6px;
 }
 
 .total{
-  font-size:22px;
-  font-weight:700;
+  font-size:20px;
+  font-weight:800;
+  margin-top:10px;
+}
+
+/* ================= ACTIONS ================= */
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:16px;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+  margin-top:40px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
 }
 
 /* ================= RESPONSIVE ================= */
 @media(max-width:900px){
-  .grid{grid-template-columns:1fr}
+  .grid{
+    grid-template-columns:1fr;
+  }
 }
 
 </style>
@@ -205,30 +239,29 @@ body{
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">
-    <div class="logo-box">✓</div>
-    <div class="title">
-      <h2>Create Bill</h2>
-      <p>Select items, generate amount, and create bill</p>
-    </div>
+  <div class="title">
+    <h1>Create Bill</h1>
+    <p>Select items and generate a smart payment bill</p>
   </div>
 
-  <div class="header-right">
-    <a href="dashboard.html" class="btn btn-secondary">Back</a>
-  </div>
+  <a href="seller-dashboard.html" class="btn btn-secondary">Back</a>
 </div>
 
 <div class="grid">
 
-<!-- LEFT SIDE -->
+<!-- LEFT -->
 <div>
 
 <!-- BILL TYPE -->
-<div class="card">
-  <h3>Bill Type</h3>
-  <div class="bill-type">
-    <div class="bill-option active" onclick="selectType(this)">Customer Bill</div>
-    <div class="bill-option" onclick="selectType(this)">Stock Bill</div>
+<div class="bill-type">
+  <div class="bill-card active" onclick="setType('customer')">
+    <h3>Customer Bill</h3>
+    <p>Used for selling items</p>
+  </div>
+
+  <div class="bill-card" onclick="setType('stock')">
+    <h3>Stock Bill</h3>
+    <p>Used for purchasing stock</p>
   </div>
 </div>
 
@@ -238,136 +271,85 @@ body{
 </div>
 
 <!-- PRODUCTS -->
-<div class="products">
-
-<div class="product" data-name="Maggi" data-price="20">
-  Maggi ₹20
-  <div class="qty">
-    <button onclick="changeQty(this,-1)">-</button>
-    <span>0</span>
-    <button onclick="changeQty(this,1)">+</button>
-  </div>
-</div>
-
-<div class="product" data-name="Coke" data-price="40">
-  Coke ₹40
-  <div class="qty">
-    <button onclick="changeQty(this,-1)">-</button>
-    <span>0</span>
-    <button onclick="changeQty(this,1)">+</button>
-  </div>
-</div>
+<div class="products" id="products"></div>
 
 </div>
 
-</div>
-
-<!-- RIGHT SIDE -->
+<!-- RIGHT SUMMARY -->
 <div class="summary">
 
-<div class="card">
-  <h3>Bill Summary</h3>
+<h3>Bill Summary</h3>
 
-  <div id="items"></div>
+<div id="summaryItems"></div>
 
-  <hr style="margin:12px 0">
+<div class="total" id="total">₹0</div>
 
-  <div class="item-row">
-    <span>Total</span>
-    <span id="total">₹0</span>
-  </div>
-
-  <div style="margin-top:16px;">
-    <a href="qr-page.html" class="btn btn-primary" style="width:100%">Generate Smart QR</a>
-  </div>
+<div class="actions">
+  <a href="qr-page.html" class="btn btn-primary">Generate Smart QR</a>
+  <button class="btn btn-secondary" onclick="clearBill()">Clear Bill</button>
+</div>
 
 </div>
 
 </div>
 
+<!-- FOOTER -->
+<div class="footer">
+Smart billing powered by ScanBill • Hackathon 2026
 </div>
 
 </div>
 
 <script>
-let billType = "customer_bill";
 
-// SELECT TYPE
-function selectType(el) {
-  document.querySelectorAll(".bill-option").forEach(e => e.classList.remove("active"));
-  el.classList.add("active");
+let items = {}
 
-  billType = el.innerText.includes("Stock") ? "stock_bill" : "customer_bill";
+function changeQty(btn, val){
+  let span = btn.parentElement.children[1]
+  let qty = parseInt(span.innerText)
+  qty += val
+  if(qty<0) qty=0
+  span.innerText = qty
+
+  let card = btn.closest(".product")
+  let name = card.dataset.name
+  let price = parseInt(card.dataset.price)
+
+  if(qty>0){
+    items[name]={qty,price}
+  } else {
+    delete items[name]
+  }
+
+  updateSummary()
 }
 
-// LOAD ITEMS FROM BACKEND
-async function loadItems() {
-  const res = await fetch("http://localhost:5000/items");
-  const data = await res.json();
+function updateSummary(){
+  let container=document.getElementById("items")
+  let total=0
+  container.innerHTML=""
 
-  const container = document.querySelector(".products");
-  container.innerHTML = "";
+  for(let key in items){
+    let item=items[key]
+    let sub=item.qty*item.price
+    total+=sub
 
-  data.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "product";
-    div.innerHTML = `
-      ${item.name} ₹${item.price}
-      <div class="qty">
-        <button onclick="changeQty(this,-1)">-</button>
-        <span>0</span>
-        <button onclick="changeQty(this,1)">+</button>
+    container.innerHTML+=`
+      <div class="item-row">
+        <span>${key} x${item.qty}</span>
+        <span>₹${sub}</span>
       </div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-function changeQty(btn, val) {
-  let span = btn.parentElement.children[1];
-  let qty = parseInt(span.innerText) + val;
-  if (qty < 0) qty = 0;
-  span.innerText = qty;
-}
-
-// CREATE BILL
-async function createBill() {
-  let items = [];
-
-  document.querySelectorAll(".product").forEach(p => {
-    let name = p.childNodes[0].textContent.split("₹")[0].trim();
-    let qty = parseInt(p.querySelector("span").innerText);
-
-    if (qty > 0) {
-      items.push({ name, qty });
-    }
-  });
-
-  if (items.length === 0) {
-    alert("Select at least one item");
-    return;
+    `
   }
 
-  const res = await fetch("http://localhost:5000/bill/create", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items, billType })
-  });
-
-  const data = await res.json();
-
-  if (data.error) {
-    alert(data.error);
-    return;
-  }
-
-  localStorage.setItem("billId", data.bill.billId);
-  localStorage.setItem("qr", data.qr);
-
-  window.location.href = "qr-page.html";
+  document.getElementById("total").innerText="₹"+total
 }
 
-loadItems();
+function selectType(el){
+  document.querySelectorAll(".bill-option").forEach(e=>e.classList.remove("active"))
+  el.classList.add("active")
+}
+
 </script>
 
 </body>

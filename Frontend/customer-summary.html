@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Summary - ScanBill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* =========================
+       DESIGN SYSTEM
+    ========================= */
+    :root{
+      --bg:#F8FBFF;
+      --white:#FFFFFF;
+      --card:#FFFFFF;
+
+      --light-blue:#DCEEFF;
+      --soft-blue:#CFE5FF;
+      --accent:#60A5FA;
+      --accent-dark:#3B82F6;
+      --indigo:#A5B4FC;
+      --lavender:#DDD6FE;
+
+      --text:#334155;
+      --muted:#64748B;
+      --border:#E2E8F0;
+
+      --success:#16A34A;
+      --success-soft:#ECFDF3;
+      --warning:#D97706;
+      --warning-soft:#FFF7E8;
+      --purple:#7C3AED;
+      --purple-soft:#F5F0FF;
+
+      --shadow:0 12px 30px rgba(100,130,180,0.12);
+      --shadow-soft:0 8px 22px rgba(96,165,250,0.10);
+      --shadow-hover:0 18px 36px rgba(100,130,180,0.16);
+
+      --radius:20px;
+      --radius-md:16px;
+      --radius-sm:14px;
+
+      --transition:all 0.28s ease;
+    }
+
+    /* =========================
+       RESET
+    ========================= */
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:"Inter",sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(96,165,250,0.12), transparent 26%),
+        radial-gradient(circle at 88% 16%, rgba(221,214,254,0.22), transparent 30%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    button{
+      font-family:inherit;
+      border:none;
+      background:none;
+      cursor:pointer;
+    }
+
+    img, svg{
+      display:block;
+    }
+
+    /* =========================
+       PAGE WRAPPER
+    ========================= */
+    .page{
+      max-width:1280px;
+      margin:0 auto;
+      padding:32px 40px 40px;
+    }
+
+    .section{
+      margin-bottom:32px;
+      animation:fadeUp 0.75s ease both;
+    }
+
+    .section.delay-1{ animation-delay:0.06s; }
+    .section.delay-2{ animation-delay:0.12s; }
+    .section.delay-3{ animation-delay:0.18s; }
+    .section.delay-4{ animation-delay:0.24s; }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(18px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* =========================
+       TOP HEADER
+    ========================= */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+    }
+
+    .brand-logo svg{
+      width:22px;
+      height:22px;
+    }
+
+    .page-heading h1{
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:6px;
+      line-height:1.15;
+    }
+
+    .page-heading p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:620px;
+    }
+
+    .topbar-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* =========================
+       BUTTON SYSTEM
+    ========================= */
+    .btn{
+      min-height:46px;
+      padding:0 18px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:600;
+      transition:var(--transition);
+      white-space:nowrap;
+      line-height:1;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn:active{
+      transform:translateY(0);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--accent),#8B8CFF);
+      color:#fff;
+      box-shadow:0 12px 26px rgba(96,165,250,0.28);
+    }
+
+    .btn-primary:hover{
+      box-shadow:0 16px 30px rgba(96,165,250,0.34);
+    }
+
+    .btn-secondary{
+      background:#FFFFFF;
+      border:1px solid #D8E6F6;
+      color:var(--text);
+      box-shadow:0 4px 12px rgba(120,150,200,0.06);
+    }
+
+    .btn-secondary:hover{
+      background:#F7FBFF;
+    }
+
+    .btn-sm{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    /* =========================
+       GENERIC CARD
+    ========================= */
+    .card{
+      background:rgba(255,255,255,0.95);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:var(--shadow);
+      transition:var(--transition);
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-hover);
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+
+    .section-sub{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      margin-top:6px;
+    }
+
+    /* =========================
+       OVERVIEW CARDS
+    ========================= */
+    .overview-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .overview-card{
+      min-height:170px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .overview-card::before{
+      content:"";
+      position:absolute;
+      top:-42px;
+      right:-28px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .overview-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .overview-icon{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .overview-icon.blue{ background:linear-gradient(135deg,#EAF4FF,#F2ECFF); }
+    .overview-icon.green{ background:linear-gradient(135deg,#EAFBF1,#F4FFF7); }
+    .overview-icon.purple{ background:linear-gradient(135deg,#F1EDFF,#FAF8FF); }
+    .overview-icon.amber{ background:linear-gradient(135deg,#FFF7E6,#FFFDF5); }
+
+    .overview-label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.03em;
+      margin-bottom:8px;
+    }
+
+    .overview-value{
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:10px;
+    }
+
+    .overview-note{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    /* =========================
+       CHART + CATEGORY
+    ========================= */
+    .analytics-grid{
+      display:grid;
+      grid-template-columns:1.25fr 1fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .chart-card{
+      min-height:420px;
+    }
+
+    .chart-wrap{
+      height:300px;
+      position:relative;
+      margin-top:8px;
+    }
+
+    canvas{
+      width:100% !important;
+      height:100% !important;
+    }
+
+    .category-list{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      margin-top:8px;
+    }
+
+    .category-row{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#FAFCFF;
+      border:1px solid #E8EFF7;
+      transition:var(--transition);
+    }
+
+    .category-row:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 20px rgba(100,130,180,0.08);
+    }
+
+    .category-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .category-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .category-dot{
+      width:12px;
+      height:12px;
+      border-radius:999px;
+      flex-shrink:0;
+    }
+
+    .category-head strong{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .category-head span{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .progress-track{
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background:#EEF4FA;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      border-radius:999px;
+      width:0;
+      animation:growBar 1.4s ease forwards;
+    }
+
+    @keyframes growBar{
+      from{ width:0; }
+    }
+
+    /* =========================
+       AI INSIGHTS
+    ========================= */
+    .insights-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .insight-card{
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .insight-card::after{
+      content:"";
+      position:absolute;
+      right:-28px;
+      bottom:-28px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .insight-top{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .insight-icon{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .insight-icon.snack{ background:linear-gradient(135deg,#FFF4EC,#FFF9F5); }
+    .insight-icon.drink{ background:linear-gradient(135deg,#EEF7FF,#F7FBFF); }
+    .insight-icon.idea{ background:linear-gradient(135deg,#F2ECFF,#FAF8FF); }
+    .insight-icon.chart{ background:linear-gradient(135deg,#F4F8FD,#FAFCFF); }
+
+    .insight-title{
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:8px;
+    }
+
+    .insight-main{
+      font-size:21px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:10px;
+    }
+
+    .insight-text{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* =========================
+       RECENT PURCHASES
+    ========================= */
+    .purchase-card{
+      overflow:hidden;
+    }
+
+    .purchase-table-wrap{
+      overflow-x:auto;
+      border:1px solid #E8EFF7;
+      border-radius:18px;
+      background:#FCFEFF;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+
+    thead{
+      background:linear-gradient(135deg,#F4F9FF,#F7F4FF);
+    }
+
+    th, td{
+      padding:18px 18px;
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    th{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      border-bottom:1px solid #E8EFF7;
+    }
+
+    td{
+      font-size:14px;
+      color:var(--text);
+      border-bottom:1px solid #EDF2F7;
+    }
+
+    tbody tr:last-child td{
+      border-bottom:none;
+    }
+
+    tbody tr{
+      transition:var(--transition);
+    }
+
+    tbody tr:hover{
+      background:#F9FCFF;
+    }
+
+    .bill-id{
+      display:inline-flex;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#F4F8FD;
+      border:1px solid #E4ECF6;
+      font-size:12px;
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .purchase-amount{
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .purchase-date{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* =========================
+       TIPS
+    ========================= */
+    .tips-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .tip-card{
+      min-height:200px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .tip-card h3{
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin:16px 0 12px;
+      line-height:1.4;
+    }
+
+    .tip-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.85;
+    }
+
+    .tip-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 13px;
+      border-radius:999px;
+      background:#F4F8FD;
+      border:1px solid #E4ECF6;
+      font-size:12px;
+      font-weight:800;
+      color:var(--text);
+      width:max-content;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+    .footer{
+      text-align:center;
+      padding-top:8px;
+    }
+
+    .footer-brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .footer-brand .brand-logo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+    }
+
+    .footer p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width:1180px){
+      .overview-grid,
+      .insights-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .analytics-grid{
+        grid-template-columns:1fr;
+      }
+
+      .tips-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:900px){
+      .page{
+        padding:24px;
+      }
+    }
+
+    @media (max-width:768px){
+      .page{
+        padding:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .topbar-actions{
+        width:100%;
+      }
+
+      .topbar-actions .btn{
+        flex:1;
+      }
+
+      .page-heading h1{
+        font-size:26px;
+      }
+
+      .overview-grid,
+      .insights-grid{
+        grid-template-columns:1fr;
+      }
+
+      .card{
+        padding:22px;
+      }
+    }
+
+    @media (max-width:520px){
+      .topbar-actions{
+        flex-direction:column;
+      }
+
+      .topbar-actions .btn{
+        width:100%;
+      }
+
+      .page-heading p,
+      .section-sub,
+      .insight-text,
+      .tip-card p{
+        font-size:13px;
+      }
+
+      .overview-value{
+        font-size:30px;
+      }
+
+      .insight-main{
+        font-size:19px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+
+    <!-- =========================
+         TOP HEADER
+    ========================= -->
+    <section class="section">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-logo">
+            <!-- ScanBill Logo -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="page-heading">
+            <h1>Customer Summary</h1>
+            <p>Track your spending, purchases, and bill history in one place</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="index.html" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Dashboard
+          </a>
+
+          <button class="btn btn-primary" onclick="alert('Export Summary action simulated')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 11L12 15L16 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 19H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Export Summary
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         OVERVIEW CARDS
+    ========================= -->
+    <section class="overview-grid section delay-1">
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="6" width="16" height="12" rx="3" stroke="#60A5FA" stroke-width="2"/>
+              <path d="M4 10H20" stroke="#60A5FA" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Monthly Spending</div>
+          <div class="overview-value">₹2,450</div>
+          <div class="overview-note">Your total spending recorded through recent ScanBill bills.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M7 7H17" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 12H17" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 17H13" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Total Purchases</div>
+          <div class="overview-value">18</div>
+          <div class="overview-note">Number of purchase bills generated and stored for you.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Top Spending Category</div>
+          <div class="overview-value">Snacks</div>
+          <div class="overview-note">Your highest spending category this month so far.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.5" stroke="#D97706" stroke-width="1.8"/>
+              <path d="M12 8V12L14.8 14.2" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Average Per Bill</div>
+          <div class="overview-value">₹136</div>
+          <div class="overview-note">Your average spend per recorded digital bill.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         CHART + CATEGORY BREAKDOWN
+    ========================= -->
+    <section class="analytics-grid section delay-2">
+      <div class="card chart-card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 18H19" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 15L11 11L14 14L18 9" stroke="#60A5FA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Spending Trend
+            </div>
+            <div class="section-sub">A simple view of how your spending changed across the month.</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="spendingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6 18V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 18V8" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 18V5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Where You’re Spending
+            </div>
+            <div class="section-sub">Category-wise spending made easy to understand.</div>
+          </div>
+        </div>
+
+        <div class="category-list">
+          <div class="category-row">
+            <div class="category-head">
+              <div class="category-left">
+                <span class="category-dot" style="background:#60A5FA;"></span>
+                <strong>Snacks</strong>
+              </div>
+              <span>₹900</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:36%; background:linear-gradient(90deg,#60A5FA,#93C5FD);"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <div class="category-left">
+                <span class="category-dot" style="background:#A5B4FC;"></span>
+                <strong>Beverages</strong>
+              </div>
+              <span>₹600</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:24%; background:linear-gradient(90deg,#A5B4FC,#C4B5FD);"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <div class="category-left">
+                <span class="category-dot" style="background:#DDD6FE;"></span>
+                <strong>Grocery</strong>
+              </div>
+              <span>₹500</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:20%; background:linear-gradient(90deg,#DDD6FE,#E9D5FF);"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <div class="category-left">
+                <span class="category-dot" style="background:#93C5FD;"></span>
+                <strong>Dairy</strong>
+              </div>
+              <span>₹250</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:10%; background:linear-gradient(90deg,#93C5FD,#BFDBFE);"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <div class="category-left">
+                <span class="category-dot" style="background:#C4B5FD;"></span>
+                <strong>Daily Use</strong>
+              </div>
+              <span>₹200</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:8%; background:linear-gradient(90deg,#C4B5FD,#DDD6FE);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         AI INSIGHTS
+    ========================= -->
+    <section class="section delay-3">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+            Smart Spending Insights
+          </div>
+          <div class="section-sub">Helpful observations based on your recent purchase bills</div>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon snack">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 8H17" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M6 12H18" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M8 16H16" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Snacks Spending</div>
+            <div class="insight-main">You spent more on snacks this month</div>
+            <div class="insight-text">Snack purchases are your most frequent category and contribute the biggest share of your monthly spending.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon drink">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 5H15L14 10V18C14 19.1 13.1 20 12 20C10.9 20 10 19.1 10 18V10L9 5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Beverage Trend</div>
+            <div class="insight-main">Beverage spending increased this week</div>
+            <div class="insight-text">This week shows a noticeable rise in drink purchases compared to your earlier bills.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon idea">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18H15" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M10 21H14" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 3C8.69 3 6 5.69 6 9C6 11.04 7 12.84 8.5 13.94C9.12 14.4 9.5 15.1 9.5 15.87V16H14.5V15.87C14.5 15.1 14.88 14.4 15.5 13.94C17 12.84 18 11.04 18 9C18 5.69 15.31 3 12 3Z" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Saving Idea</div>
+            <div class="insight-main">You may save more by reducing repeat packaged purchases</div>
+            <div class="insight-text">Repeated small snack and drink purchases can add up quickly across the month.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon chart">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 18V12" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 18V8" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M18 18V5" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Weekend Pattern</div>
+            <div class="insight-main">Your spending is highest during weekends</div>
+            <div class="insight-text">Weekend bills show slightly higher total spend compared to weekday purchases.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         RECENT PURCHASES
+    ========================= -->
+    <section class="card purchase-card section delay-4">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="5" y="4" width="14" height="16" rx="3" stroke="#60A5FA" stroke-width="1.8"/>
+              <path d="M9 9H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 13H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Recent Purchases
+          </div>
+          <div class="section-sub">A simple record of your latest digital bills and purchases.</div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="alert('View all bills action simulated')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M8 6H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 12H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8 18H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="5" cy="6" r="1" fill="currentColor"/>
+            <circle cx="5" cy="12" r="1" fill="currentColor"/>
+            <circle cx="5" cy="18" r="1" fill="currentColor"/>
+          </svg>
+          View All Bills
+        </button>
+      </div>
+
+      <div class="purchase-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Bill ID</th>
+              <th>Items</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><span class="bill-id">SB104</span></td>
+              <td>2 Maggi, 1 Coke</td>
+              <td class="purchase-date">05 Apr 2026</td>
+              <td class="purchase-amount">₹80</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="alert('Viewing bill SB104')">View Bill</button></td>
+            </tr>
+
+            <tr>
+              <td><span class="bill-id">SB105</span></td>
+              <td>Milk, Bread, Biscuit</td>
+              <td class="purchase-date">04 Apr 2026</td>
+              <td class="purchase-amount">₹120</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="alert('Viewing bill SB105')">View Bill</button></td>
+            </tr>
+
+            <tr>
+              <td><span class="bill-id">SB106</span></td>
+              <td>Chips, Coke</td>
+              <td class="purchase-date">03 Apr 2026</td>
+              <td class="purchase-amount">₹70</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="alert('Viewing bill SB106')">View Bill</button></td>
+            </tr>
+
+            <tr>
+              <td><span class="bill-id">SB107</span></td>
+              <td>Maggi, Milk</td>
+              <td class="purchase-date">02 Apr 2026</td>
+              <td class="purchase-amount">₹95</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="alert('Viewing bill SB107')">View Bill</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =========================
+         HELPFUL TIPS
+    ========================= -->
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18H15" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              <path d="M10 21H14" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 3C8.69 3 6 5.69 6 9C6 11.04 7 12.84 8.5 13.94C9.12 14.4 9.5 15.1 9.5 15.87V16H14.5V15.87C14.5 15.1 14.88 14.4 15.5 13.94C17 12.84 18 11.04 18 9C18 5.69 15.31 3 12 3Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+            Helpful Tips
+          </div>
+          <div class="section-sub">Supportive suggestions based on your recent spending behavior.</div>
+        </div>
+      </div>
+
+      <div class="tips-grid">
+        <div class="card tip-card">
+          <div class="tip-badge">Smart Saving</div>
+          <h3>Try reducing beverage purchases this week to save more</h3>
+          <p>Your beverage spending has slightly increased compared to your usual weekly average.</p>
+        </div>
+
+        <div class="card tip-card">
+          <div class="tip-badge">Spending Pattern</div>
+          <h3>Your snack spending is above your average</h3>
+          <p>Snacks remain your highest category. Small changes here can make the biggest difference over time.</p>
+        </div>
+
+        <div class="card tip-card">
+          <div class="tip-badge">Planning Tip</div>
+          <h3>Buying in planned batches may reduce frequent small purchases</h3>
+          <p>Fewer repeat visits for similar packaged items can help improve monthly spending control.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+    <footer class="footer section">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>ScanBill</span>
+      </div>
+
+      <p>Your purchase history and bill records are securely organized with ScanBill</p>
+      <p>Built for Hackathon 2026</p>
+    </footer>
+
+  </main>
+
+  <script>
+    // =========================
+    // SPENDING TREND CHART
+    // =========================
+    const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+
+    new Chart(spendingCtx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+          label: 'Monthly Spending',
+          data: [450, 600, 750, 650],
+          borderColor: '#60A5FA',
+          backgroundColor: 'rgba(96, 165, 250, 0.12)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#60A5FA',
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1400,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#FFFFFF',
+            titleColor: '#334155',
+            bodyColor: '#64748B',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              }
+            },
+            border: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              },
+              callback: value => '₹' + value
+            },
+            grid: {
+              color: 'rgba(148, 163, 184, 0.12)'
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
