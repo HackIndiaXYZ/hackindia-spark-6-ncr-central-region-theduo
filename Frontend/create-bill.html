@@ -285,7 +285,7 @@ body{
 <div class="total" id="total">₹0</div>
 
 <div class="actions">
-  <a href="qr-page.html" class="btn btn-primary">Generate Smart QR</a>
+  <button class="btn btn-primary" onclick="createBill()">Generate Smart QR</button>
   <button class="btn btn-secondary" onclick="clearBill()">Clear Bill</button>
 </div>
 
@@ -301,6 +301,67 @@ Smart billing powered by ScanBill • Hackathon 2026
 </div>
 
 <script>
+
+  const API = "https://scanbill-backend.onrender.com";
+
+window.onload = loadProducts;
+
+async function loadProducts(){
+  const res = await fetch(`${API}/items`);
+  const data = await res.json();
+
+  const container = document.getElementById("products");
+
+  data.forEach(item=>{
+    container.innerHTML += `
+      <div class="product" data-name="${item.name}" data-price="${item.price}">
+        <h4>${item.name}</h4>
+        <span>₹${item.price}</span>
+
+        <div class="stepper">
+          <button onclick="changeQty(this,-1)">-</button>
+          <span class="qty">0</span>
+          <button onclick="changeQty(this,1)">+</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+async function createBill(){
+
+  let selected = [];
+
+  for(let key in items){
+    selected.push({
+      name: key,
+      qty: items[key].qty
+    });
+  }
+
+  if(selected.length === 0){
+    alert("Select items first");
+    return;
+  }
+
+  const res = await fetch(`${API}/bill/create`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      items: selected,
+      billType: "customer_bill"
+    })
+  });
+
+  const data = await res.json();
+
+  // 🔥 STORE PROPERLY
+  localStorage.setItem("qr", data.qr);
+  localStorage.setItem("billId", data.bill.billId);
+  localStorage.setItem("amount", data.bill.total);
+
+  window.location.href = "qr-page.html";
+}
 
 let items = {}
 
@@ -325,7 +386,7 @@ function changeQty(btn, val){
 }
 
 function updateSummary(){
-  let container=document.getElementById("items")
+  let container=document.getElementById("summaryItems")
   let total=0
   container.innerHTML=""
 

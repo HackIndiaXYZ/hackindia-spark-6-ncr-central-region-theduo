@@ -1610,22 +1610,16 @@
   </script>
   <script>
 async function loadDashboard() {
-  const res = await fetch("http://localhost:5000/ai/seller-insights");
+  const res = await fetch("https://scanbill-backend.onrender.com/ai/seller-insights");
   const data = await res.json();
 
-  // TOTAL SALES
   document.querySelector("#totalSales").innerText = "₹" + data.totalSales;
-
-  // TOP ITEM
   document.querySelector("#topItem").innerText = data.topSellingItem;
 
-  // LOW STOCK
   document.querySelector("#lowStock").innerText = data.lowStockItems.join(", ");
 
-  // RESTOCK
   document.querySelector("#restock").innerText = data.restockSuggestion;
 
-  // OPTIONAL: insights list
   const list = document.querySelector("#insightsList");
   list.innerHTML = "";
 

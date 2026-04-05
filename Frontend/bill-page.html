@@ -1176,7 +1176,7 @@
 const billId = localStorage.getItem("billId");
 
 async function loadBill() {
-  const res = await fetch(`http://localhost:5000/bill/${billId}`);
+  const res = await fetch(`https://scanbill-backend.onrender.com/bill/${billId}`);
   const data = await res.json();
 
   document.querySelector(".bill-total").innerText = data.total;

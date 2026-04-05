@@ -1157,7 +1157,7 @@ let currentFilter = "all";
 
 // 🔥 LOAD DATA FROM BACKEND
 async function loadInventory() {
-  const res = await fetch("http://localhost:5000/inventory");
+  const res = await fetch("https://scanbill-backend.onrender.com/inventory");
   const data = await res.json();
 
   inventoryItems = data.map(item => ({
@@ -1242,7 +1242,7 @@ async function addItem(){
 
   console.log("Sending:", { name, price, category, qty });
 
-  await fetch("http://localhost:5000/items/add", {
+  await fetch("https://scanbill-backend.onrender.com/items/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -1263,7 +1263,7 @@ async function updateStock(name){
 
   if(!qty) return;
 
-  await fetch("http://localhost:5000/bill/create", {
+  await fetch("https://scanbill-backend.onrender.com/bill/create", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

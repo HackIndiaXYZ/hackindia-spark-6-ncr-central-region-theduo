@@ -1194,7 +1194,7 @@
   </script>
   <script>
 async function loadInsights() {
-  const res = await fetch("http://localhost:5000/ai/seller-insights");
+  const res = await fetch("https://scanbill-backend.onrender.com/ai/seller-insights");
   const data = await res.json();
 
   console.log(data);
