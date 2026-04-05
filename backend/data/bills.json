@@ -1,0 +1,21 @@
+[
+  {
+    "billId": "4575fdaf-918c-411c-a972-fddee8766205",
+    "items": [
+      {
+        "name": "Maggi",
+        "qty": 2,
+        "price": 20
+      },
+      {
+        "name": "Coke",
+        "qty": 1,
+        "price": 40
+      }
+    ],
+    "total": 80,
+    "billType": "customer_bill",
+    "paid": false,
+    "date": "2026-04-04T17:35:39.931Z"
+  }
+]
