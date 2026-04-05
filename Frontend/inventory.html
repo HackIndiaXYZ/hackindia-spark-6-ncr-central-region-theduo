@@ -1320,6 +1320,15 @@
 
     renderTable();
   </script>
+  <script>
+async function loadInventory() {
+  const res = await fetch("http://localhost:5000/inventory");
+  const data = await res.json();
+
+  console.log(data);
+}
+loadInventory();
+</script>
 
 </body>
 </html>

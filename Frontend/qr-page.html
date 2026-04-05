@@ -675,5 +675,30 @@
   }, 1400);
 });
   </script>
+  <script>
+const qr = localStorage.getItem("qr");
+const billId = localStorage.getItem("billId");
+
+// SHOW QR
+document.querySelector(".qr-box").innerHTML = `<img src="${qr}" width="200">`;
+
+// PAY BUTTON
+async function pay() {
+  const res = await fetch("http://localhost:5000/bill/pay", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ billId })
+  });
+
+  const data = await res.json();
+
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
+
+  window.location.href = "bill-page.html";
+}
+</script>
 </body>
 </html>

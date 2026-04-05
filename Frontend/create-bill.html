@@ -290,55 +290,84 @@ body{
 </div>
 
 <script>
+let billType = "customer_bill";
 
-let items = {}
+// SELECT TYPE
+function selectType(el) {
+  document.querySelectorAll(".bill-option").forEach(e => e.classList.remove("active"));
+  el.classList.add("active");
 
-function changeQty(btn, val){
-  let span = btn.parentElement.children[1]
-  let qty = parseInt(span.innerText)
-  qty += val
-  if(qty<0) qty=0
-  span.innerText = qty
-
-  let card = btn.closest(".product")
-  let name = card.dataset.name
-  let price = parseInt(card.dataset.price)
-
-  if(qty>0){
-    items[name]={qty,price}
-  } else {
-    delete items[name]
-  }
-
-  updateSummary()
+  billType = el.innerText.includes("Stock") ? "stock_bill" : "customer_bill";
 }
 
-function updateSummary(){
-  let container=document.getElementById("items")
-  let total=0
-  container.innerHTML=""
+// LOAD ITEMS FROM BACKEND
+async function loadItems() {
+  const res = await fetch("http://localhost:5000/items");
+  const data = await res.json();
 
-  for(let key in items){
-    let item=items[key]
-    let sub=item.qty*item.price
-    total+=sub
+  const container = document.querySelector(".products");
+  container.innerHTML = "";
 
-    container.innerHTML+=`
-      <div class="item-row">
-        <span>${key} x${item.qty}</span>
-        <span>₹${sub}</span>
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      ${item.name} ₹${item.price}
+      <div class="qty">
+        <button onclick="changeQty(this,-1)">-</button>
+        <span>0</span>
+        <button onclick="changeQty(this,1)">+</button>
       </div>
-    `
+    `;
+    container.appendChild(div);
+  });
+}
+
+function changeQty(btn, val) {
+  let span = btn.parentElement.children[1];
+  let qty = parseInt(span.innerText) + val;
+  if (qty < 0) qty = 0;
+  span.innerText = qty;
+}
+
+// CREATE BILL
+async function createBill() {
+  let items = [];
+
+  document.querySelectorAll(".product").forEach(p => {
+    let name = p.childNodes[0].textContent.split("₹")[0].trim();
+    let qty = parseInt(p.querySelector("span").innerText);
+
+    if (qty > 0) {
+      items.push({ name, qty });
+    }
+  });
+
+  if (items.length === 0) {
+    alert("Select at least one item");
+    return;
   }
 
-  document.getElementById("total").innerText="₹"+total
+  const res = await fetch("http://localhost:5000/bill/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items, billType })
+  });
+
+  const data = await res.json();
+
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
+
+  localStorage.setItem("billId", data.bill.billId);
+  localStorage.setItem("qr", data.qr);
+
+  window.location.href = "qr-page.html";
 }
 
-function selectType(el){
-  document.querySelectorAll(".bill-option").forEach(e=>e.classList.remove("active"))
-  el.classList.add("active")
-}
-
+loadItems();
 </script>
 
 </body>
