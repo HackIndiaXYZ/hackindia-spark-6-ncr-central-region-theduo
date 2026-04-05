@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScanBill — Seller Dashboard</title>
+  <meta
+    name="description"
+    content="ScanBill Seller Dashboard — Manage billing, inventory, and AI business insights in one place."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --white: #ffffff;
+      --bg-main: #f6f9ff;
+      --bg-soft: #eef5ff;
+      --bg-card: rgba(255, 255, 255, 0.82);
+
+      --blue-100: #dceeff;
+      --blue-200: #cfe5ff;
+      --blue-500: #60a5fa;
+      --blue-600: #4f7bd8;
+
+      --indigo-300: #a5b4fc;
+      --lavender-200: #ddd6fe;
+      --lavender-300: #e9d5ff;
+
+      --text-main: #1f3348;
+      --text-secondary: #52657b;
+      --text-light: #72849a;
+
+      --border: rgba(150, 178, 215, 0.24);
+      --border-strong: rgba(130, 160, 200, 0.32);
+
+      --shadow-sm: 0 10px 24px rgba(106, 137, 186, 0.08);
+      --shadow-md: 0 18px 40px rgba(104, 136, 186, 0.12);
+      --shadow-lg: 0 24px 60px rgba(104, 136, 186, 0.16);
+
+      --radius-sm: 16px;
+      --radius-md: 20px;
+      --radius-lg: 26px;
+      --radius-xl: 32px;
+
+      --container: 1320px;
+      --transition: 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(96, 165, 250, 0.14), transparent 24%),
+        radial-gradient(circle at 88% 16%, rgba(221, 214, 254, 0.28), transparent 26%),
+        radial-gradient(circle at 78% 72%, rgba(233, 213, 255, 0.18), transparent 20%),
+        linear-gradient(180deg, #f8fbff 0%, #f4f8ff 48%, #f7fbff 100%);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      border: none;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    .container {
+      width: min(100% - 48px, var(--container));
+      margin-inline: auto;
+    }
+
+    .page {
+      padding: 32px 0 40px;
+    }
+
+    .section-space {
+      margin-top: 28px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(18px);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 35%);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 48px rgba(104, 136, 186, 0.16);
+      border-color: rgba(96, 165, 250, 0.24);
+    }
+
+    .card-pad {
+      padding: 24px;
+    }
+
+    .card-pad-lg {
+      padding: 28px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-title p {
+      color: var(--text-light);
+      font-size: 0.92rem;
+    }
+
+    .eyebrow-link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue-600);
+      white-space: nowrap;
+    }
+
+    /* =========================
+       BUTTON SYSTEM
+    ========================= */
+    .btn-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .btn:active {
+      transform: translateY(2px) scale(0.985);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #60a5fa 0%, #8b8cff 100%);
+      color: white;
+      box-shadow: 0 14px 30px rgba(96, 165, 250, 0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 34px rgba(96, 165, 250, 0.34);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,1);
+      box-shadow: 0 16px 30px rgba(110, 142, 190, 0.14);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.68);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.92);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+    .topbar {
+      position: sticky;
+      top: 18px;
+      z-index: 30;
+    }
+
+    .topbar-shell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(176, 198, 228, 0.24);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #dff0ff 0%, #e9d5ff 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 24px rgba(116,147,191,0.14);
+      flex-shrink: 0;
+    }
+
+    .topbar-copy h1 {
+      font-size: 1.24rem;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .topbar-copy p {
+      color: var(--text-light);
+      font-size: 0.92rem;
+      max-width: 560px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(110, 142, 190, 0.14);
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(96,165,250,0.18), rgba(221,214,254,0.26));
+      border: 1px solid rgba(173, 198, 230, 0.22);
+      font-weight: 800;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* =========================
+       WELCOME
+    ========================= */
+    .welcome-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.82), transparent 30%),
+        linear-gradient(135deg, rgba(207,229,255,0.72), rgba(233,213,255,0.74));
+      border: 1px solid rgba(174, 199, 230, 0.24);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .welcome-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.24);
+      right: -70px;
+      top: -70px;
+      filter: blur(6px);
+    }
+
+    .welcome-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .welcome-copy h2 {
+      font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .welcome-copy p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 60ch;
+    }
+
+    .welcome-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(170, 196, 228, 0.22);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* =========================
+       METRICS
+    ========================= */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .metric-card {
+      min-height: 178px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .metric-label {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .metric-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(207,229,255,0.82), rgba(233,213,255,0.72));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
+      flex-shrink: 0;
+    }
+
+    .metric-value {
+      font-size: clamp(1.8rem, 2vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .metric-meta {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .metric-meta strong {
+      color: #2f8f73;
+      font-weight: 700;
+    }
+
+    /* =========================
+       QUICK ACTIONS
+    ========================= */
+    .actions-shell {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .action-card {
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(172, 198, 230, 0.22);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .action-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 38px rgba(106, 138, 187, 0.14);
+      border-color: rgba(96, 165, 250, 0.24);
+    }
+
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(207,229,255,0.84), rgba(233,213,255,0.76));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      margin-bottom: 14px;
+    }
+
+    .action-card h4 {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .action-card p {
+      color: var(--text-light);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    /* =========================
+       MAIN GRID
+    ========================= */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    /* =========================
+       BILLING ACTIVITY TABLE
+    ========================= */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    .table thead th {
+      text-align: left;
+      padding: 0 16px 16px;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .table tbody tr {
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(96, 165, 250, 0.04);
+    }
+
+    .table tbody td {
+      padding: 16px;
+      border-top: 1px solid rgba(180, 201, 230, 0.22);
+      font-size: 14px;
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+
+    .table-id {
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .table-amount {
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .table-type {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(176, 198, 228, 0.22);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.9;
+    }
+
+    .status.paid {
+      color: #2f8f73;
+      background: rgba(47, 143, 115, 0.12);
+    }
+
+    .status.pending {
+      color: #d97706;
+      background: rgba(217, 119, 6, 0.12);
+    }
+
+    /* =========================
+       SALES PANEL
+    ========================= */
+    .sales-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .sales-value {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .sales-growth {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(47, 143, 115, 0.12);
+      color: #2f8f73;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chart {
+      display: flex;
+      align-items: end;
+      gap: 14px;
+      min-height: 190px;
+      padding-top: 16px;
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 46px;
+      border-radius: 14px 14px 10px 10px;
+      background: linear-gradient(180deg, rgba(96,165,250,0.86), rgba(221,214,254,0.82));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+      min-height: 34px;
+      transition: transform var(--transition), filter var(--transition);
+    }
+
+    .bar-col:hover .bar {
+      transform: translateY(-4px);
+      filter: brightness(1.03);
+    }
+
+    .bar-col span {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    /* =========================
+       AI PANEL
+    ========================= */
+    .ai-panel {
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.74), transparent 28%),
+        linear-gradient(135deg, rgba(220,238,255,0.66), rgba(233,213,255,0.68));
+      border: 1px solid rgba(172, 198, 230, 0.22);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-panel::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.22);
+      right: -40px;
+      top: -40px;
+      filter: blur(6px);
+    }
+
+    .ai-grid {
+      display: grid;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ai-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(172, 198, 230, 0.22);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .ai-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(106, 138, 187, 0.14);
+    }
+
+    .ai-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .ai-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(207,229,255,0.82), rgba(233,213,255,0.76));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      flex-shrink: 0;
+    }
+
+    .ai-head strong {
+      display: block;
+      font-size: 0.94rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .ai-head span {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    .ai-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    /* =========================
+       INVENTORY
+    ========================= */
+    .inventory-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .inventory-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(172, 198, 230, 0.2);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .inventory-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(106, 138, 187, 0.14);
+    }
+
+    .inventory-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .inventory-left strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .inventory-left span {
+      color: var(--text-light);
+      font-size: 0.84rem;
+    }
+
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .stock-badge.healthy {
+      color: #2f8f73;
+      background: rgba(47, 143, 115, 0.12);
+    }
+
+    .stock-badge.low {
+      color: #d97706;
+      background: rgba(217, 119, 6, 0.12);
+    }
+
+    .stock-badge.out {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.12);
+    }
+
+    /* =========================
+       REMINDER CARD
+    ========================= */
+    .helper-card {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 22px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.84), rgba(239,246,255,0.88));
+      border: 1px solid rgba(172, 198, 230, 0.22);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .helper-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(207,229,255,0.82), rgba(233,213,255,0.76));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      flex-shrink: 0;
+    }
+
+    .helper-copy h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .helper-copy p {
+      color: var(--text-secondary);
+      font-size: 0.93rem;
+      margin-bottom: 14px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+    .footer {
+      margin-top: 34px;
+    }
+
+    .footer-shell {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 22px 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(176, 198, 228, 0.22);
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(16px);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-copy strong {
+      display: block;
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .footer-copy span {
+      color: var(--text-light);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* =========================
+       REVEAL
+    ========================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: transform, opacity;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.04s; }
+    .stagger-2 { transition-delay: 0.10s; }
+    .stagger-3 { transition-delay: 0.16s; }
+    .stagger-4 { transition-delay: 0.22s; }
+    .stagger-5 { transition-delay: 0.28s; }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 1180px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .actions-shell {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .container {
+        width: min(100% - 32px, var(--container));
+      }
+
+      .page {
+        padding-top: 24px;
+      }
+
+      .topbar-shell,
+      .welcome-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-right {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .btn-row {
+        width: 100%;
+      }
+
+      .btn {
+        flex: 1 1 auto;
+      }
+
+      .actions-shell {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .metrics-grid,
+      .actions-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .card-pad,
+      .card-pad-lg {
+        padding: 22px;
+      }
+
+      .welcome-card {
+        padding: 24px;
+      }
+
+      .footer-shell {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        width: min(100% - 24px, var(--container));
+      }
+
+      .page {
+        padding-top: 18px;
+      }
+
+      .topbar-shell {
+        padding: 14px;
+        border-radius: 20px;
+      }
+
+      .topbar-copy h1 {
+        font-size: 1.1rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .topbar-right {
+        gap: 10px;
+      }
+
+      .icon-btn,
+      .avatar {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="container">
+
+      <!-- =========================
+           TOP HEADER / NAV BAR
+      ========================= -->
+      <header class="topbar reveal">
+        <div class="topbar-shell">
+          <a href="index.html" class="topbar-left" aria-label="Back to ScanBill home">
+            <div class="brand-mark" aria-hidden="true">
+              <!-- ScanBill logo -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9.2 7.5H14.8C15.35 7.5 15.8 7.95 15.8 8.5V14.4L14.9 13.7L14 14.4L13.1 13.7L12.2 14.4L11.3 13.7L10.4 14.4L9.2 13.5V8.5C9.2 7.95 9.65 7.5 10.2 7.5Z" fill="white" stroke="#456C9C" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M10.7 10.8L11.8 11.9L14.1 9.7" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <div class="topbar-copy">
+              <h1>Seller Dashboard</h1>
+              <p>Manage billing, inventory, and insights in one place</p>
+            </div>
+          </a>
+
+          <div class="topbar-right">
+            <button class="icon-btn" aria-label="Notifications">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5C9.79 5 8 6.79 8 9V11.5C8 12.33 7.68 13.13 7.1 13.72L6.5 14.32C5.87 14.95 6.32 16 7.21 16H16.79C17.68 16 18.13 14.95 17.5 14.32L16.9 13.72C16.32 13.13 16 12.33 16 11.5V9C16 6.79 14.21 5 12 5Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M10.5 18C10.77 18.6 11.34 19 12 19C12.66 19 13.23 18.6 13.5 18" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+            <div class="avatar" aria-label="Seller profile">AK</div>
+
+            <a href="create-bill.html" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Create Bill
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- =========================
+           WELCOME / OVERVIEW
+      ========================= -->
+      <section class="section-space reveal stagger-1">
+        <div class="welcome-card">
+          <div class="welcome-copy">
+            <h2>Your business at a glance</h2>
+            <p>
+              Track sales, bills, stock, and smart recommendations — all from one dashboard.
+            </p>
+          </div>
+
+          <div class="welcome-chip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M6 16L10 12L13 14L18 8" stroke="#456C9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 8V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Smart billing is active today
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           TOP METRIC CARDS
+      ========================= -->
+      <section class="section-space">
+        <div class="metrics-grid">
+          <article class="card metric-card card-pad reveal stagger-1">
+            <div class="metric-top">
+              <div class="metric-label">Total Sales Today</div>
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 4V20" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M16 8.5C16 7.12 14.21 6 12 6C9.79 6 8 7.12 8 8.5C8 9.88 9.79 11 12 11C14.21 11 16 12.12 16 13.5C16 14.88 14.21 16 12 16C9.79 16 8 14.88 8 13.5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="metric-value">₹4,850</div>
+              <div class="metric-meta"><strong>+12%</strong> from yesterday</div>
+            </div>
+          </article>
+
+          <article class="card metric-card card-pad reveal stagger-2">
+            <div class="metric-top">
+              <div class="metric-label">Bills Generated</div>
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 5H16L18 7V19H6V7L8 5Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="M9 10H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M9 13H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="metric-value">28</div>
+              <div class="metric-meta">Across customer and stock bills</div>
+            </div>
+          </article>
+
+          <article class="card metric-card card-pad reveal stagger-3">
+            <div class="metric-top">
+              <div class="metric-label">Items in Inventory</div>
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 8.5H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 12H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 15.5H14" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="metric-value">142</div>
+              <div class="metric-meta">Updated from recent bill activity</div>
+            </div>
+          </article>
+
+          <article class="card metric-card card-pad reveal stagger-4">
+            <div class="metric-top">
+              <div class="metric-label">Low Stock Alerts</div>
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9V13" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M12 17H12.01" stroke="#60A5FA" stroke-width="2.4" stroke-linecap="round"/>
+                  <path d="M10.29 3.86L1.82 18C1.45 18.61 1.89 19.38 2.6 19.38H21.4C22.11 19.38 22.55 18.61 22.18 18L13.71 3.86C13.36 3.28 12.64 3.28 12.29 3.86Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="metric-value">5</div>
+              <div class="metric-meta">Need attention before weekend rush</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- =========================
+           QUICK ACTIONS
+      ========================= -->
+      <section class="section-space">
+        <div class="panel-title reveal">
+          <div>
+            <h3>Quick Actions</h3>
+            <p>Jump into the tasks sellers use most often.</p>
+          </div>
+        </div>
+
+        <div class="actions-shell">
+          <a href="create-bill.html" class="action-card reveal stagger-1">
+            <div>
+              <div class="action-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 12H19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4>Create New Bill</h4>
+              <p>Start a customer or stock bill in seconds.</p>
+            </div>
+          </a>
+
+          <a href="#" class="action-card reveal stagger-2">
+            <div>
+              <div class="action-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5V19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 12H19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4>Add New Item</h4>
+              <p>Update your catalog with new products quickly.</p>
+            </div>
+          </a>
+
+          <a href="#" class="action-card reveal stagger-3">
+            <div>
+              <div class="action-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 8.5H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 12H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M5 15.5H14" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4>View Inventory</h4>
+              <p>See what’s available, low, or out of stock.</p>
+            </div>
+          </a>
+
+          <a href="#" class="action-card reveal stagger-4">
+            <div>
+              <div class="action-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 16L10 12L13 14L18 8" stroke="#456C9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 8V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4>AI Insights</h4>
+              <p>See smart recommendations from recent activity.</p>
+            </div>
+          </a>
+
+          <a href="#" class="action-card reveal stagger-5">
+            <div>
+              <div class="action-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7H17" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 12H17" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 17H13" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4>Billing History</h4>
+              <p>Review your recent transactions and bill records.</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- =========================
+           MAIN CONTENT GRID
+      ========================= -->
+      <section class="section-space">
+        <div class="dashboard-grid">
+
+          <!-- LEFT COLUMN -->
+          <div class="stack">
+
+            <!-- Recent Billing Activity -->
+            <article class="card card-pad-lg reveal">
+              <div class="panel-title">
+                <div>
+                  <h3>Recent Billing Activity</h3>
+                  <p>Track your latest bills, bill type, amount, and payment status.</p>
+                </div>
+                <a href="#" class="eyebrow-link">View All</a>
+              </div>
+
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Bill ID</th>
+                      <th>Item Summary</th>
+                      <th>Bill Type</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="table-id">#SB104</td>
+                      <td>2 Maggi, 1 Coke</td>
+                      <td><span class="table-type">Customer Bill</span></td>
+                      <td class="table-amount">₹80</td>
+                      <td><span class="status paid">Paid</span></td>
+                    </tr>
+
+                    <tr>
+                      <td class="table-id">#SB105</td>
+                      <td>10 Biscuits, 5 Chips</td>
+                      <td><span class="table-type">Stock Bill</span></td>
+                      <td class="table-amount">₹350</td>
+                      <td><span class="status paid">Paid</span></td>
+                    </tr>
+
+                    <tr>
+                      <td class="table-id">#SB106</td>
+                      <td>1 Milk, 1 Bread, 1 Butter</td>
+                      <td><span class="table-type">Customer Bill</span></td>
+                      <td class="table-amount">₹110</td>
+                      <td><span class="status pending">Pending</span></td>
+                    </tr>
+
+                    <tr>
+                      <td class="table-id">#SB107</td>
+                      <td>6 Cold Drinks, 12 Soap Sachets</td>
+                      <td><span class="table-type">Stock Bill</span></td>
+                      <td class="table-amount">₹620</td>
+                      <td><span class="status paid">Paid</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <!-- Weekly Sales -->
+            <article class="card card-pad-lg reveal stagger-1">
+              <div class="panel-title">
+                <div>
+                  <h3>This Week’s Sales</h3>
+                  <p>Your sales are performing better than last week.</p>
+                </div>
+                <a href="analytics.html" class="btn btn-secondary">Analytics</a>
+              </div>
+
+              <div class="sales-top">
+                <div>
+                  <div class="sales-value">₹18,240</div>
+                  <p style="color: var(--text-light); font-size: 0.92rem;">
+                    Weekly total from customer billing activity
+                  </p>
+                </div>
+
+                <div class="sales-growth">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 16L10 12L13 14L18 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M18 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  Sales up +12%
+                </div>
+              </div>
+
+              <div class="chart" aria-label="Weekly sales chart">
+                <div class="bar-col">
+                  <div class="bar" style="height: 74px;"></div>
+                  <span>Mon</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 96px;"></div>
+                  <span>Tue</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 82px;"></div>
+                  <span>Wed</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 118px;"></div>
+                  <span>Thu</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 136px;"></div>
+                  <span>Fri</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 164px;"></div>
+                  <span>Sat</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height: 128px;"></div>
+                  <span>Sun</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="stack">
+
+            <!-- AI Business Assistant -->
+            <article class="card ai-panel card-pad-lg reveal stagger-2">
+              <div class="panel-title">
+                <div>
+                  <h3>AI Business Assistant</h3>
+                  <p>Smart recommendations based on your recent billing and inventory activity.</p>
+                </div>
+              </div>
+
+              <div class="ai-grid">
+                <div class="ai-card">
+                  <div class="ai-head">
+                    <div class="ai-icon">🔥</div>
+                    <div>
+                      <strong>Top Selling Product</strong>
+                      <span>Highest repeat movement today</span>
+                    </div>
+                  </div>
+                  <p>Maggi is your top-selling product and is moving 22% faster than average.</p>
+                </div>
+
+                <div class="ai-card">
+                  <div class="ai-head">
+                    <div class="ai-icon">⚠</div>
+                    <div>
+                      <strong>Low Stock Alert</strong>
+                      <span>Needs attention soon</span>
+                    </div>
+                  </div>
+                  <p>Coke stock is running low and may not last through the next rush hour.</p>
+                </div>
+
+                <div class="ai-card">
+                  <div class="ai-head">
+                    <div class="ai-icon">🔁</div>
+                    <div>
+                      <strong>Restock Suggestion</strong>
+                      <span>Based on recent purchase pattern</span>
+                    </div>
+                  </div>
+                  <p>Restock Maggi before the weekend to avoid missed sales during evening demand.</p>
+                </div>
+
+                <div class="ai-card">
+                  <div class="ai-head">
+                    <div class="ai-icon">💡</div>
+                    <div>
+                      <strong>Smart Tip</strong>
+                      <span>Operational insight</span>
+                    </div>
+                  </div>
+                  <p>Snacks and beverages are selling faster in the evening — keep them visible near checkout.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Inventory Snapshot -->
+            <article class="card card-pad-lg reveal stagger-3">
+              <div class="panel-title">
+                <div>
+                  <h3>Inventory Snapshot</h3>
+                  <p>Quick scan of current stock health and availability.</p>
+                </div>
+                <a href="#" class="eyebrow-link">View Full Inventory</a>
+              </div>
+
+              <div class="inventory-list">
+                <div class="inventory-item">
+                  <div class="inventory-left">
+                    <div class="metric-icon" style="width:44px;height:44px;border-radius:14px;">🍜</div>
+                    <div>
+                      <strong>Maggi</strong>
+                      <span>Ready noodles • 12 left</span>
+                    </div>
+                  </div>
+                  <span class="stock-badge low">Low Stock</span>
+                </div>
+
+                <div class="inventory-item">
+                  <div class="inventory-left">
+                    <div class="metric-icon" style="width:44px;height:44px;border-radius:14px;">🥤</div>
+                    <div>
+                      <strong>Coke</strong>
+                      <span>Beverages • 20 left</span>
+                    </div>
+                  </div>
+                  <span class="stock-badge healthy">Healthy</span>
+                </div>
+
+                <div class="inventory-item">
+                  <div class="inventory-left">
+                    <div class="metric-icon" style="width:44px;height:44px;border-radius:14px;">🍪</div>
+                    <div>
+                      <strong>Biscuits</strong>
+                      <span>Snacks • 4 left</span>
+                    </div>
+                  </div>
+                  <span class="stock-badge low">Low Stock</span>
+                </div>
+
+                <div class="inventory-item">
+                  <div class="inventory-left">
+                    <div class="metric-icon" style="width:44px;height:44px;border-radius:14px;">🥔</div>
+                    <div>
+                      <strong>Chips</strong>
+                      <span>Snacks • 0 left</span>
+                    </div>
+                  </div>
+                  <span class="stock-badge out">Out of Stock</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Smart Reminder -->
+            <article class="reveal stagger-4">
+              <div class="helper-card">
+                <div class="helper-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8V12" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 16H12.01" stroke="#60A5FA" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M10.29 3.86L1.82 18C1.45 18.61 1.89 19.38 2.6 19.38H21.4C22.11 19.38 22.55 18.61 22.18 18L13.71 3.86C13.36 3.28 12.64 3.28 12.29 3.86Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <div class="helper-copy">
+                  <h4>Today’s Smart Reminder</h4>
+                  <p>
+                    You have 3 items running low in stock. Updating them now can help avoid missed sales during evening traffic.
+                  </p>
+
+                  <div class="btn-row">
+                    <a href="inventory.html" class="btn btn-secondary">Inventory</a>
+                    <a href="create-bill.html" class="btn btn-ghost">Generate New Bill</a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           FOOTER
+      ========================= -->
+      <footer class="footer reveal">
+        <div class="footer-shell">
+          <div class="footer-brand">
+            <div class="brand-mark" style="width:44px;height:44px;border-radius:14px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9.2 7.5H14.8C15.35 7.5 15.8 7.95 15.8 8.5V14.4L14.9 13.7L14 14.4L13.1 13.7L12.2 14.4L11.3 13.7L10.4 14.4L9.2 13.5V8.5C9.2 7.95 9.65 7.5 10.2 7.5Z" fill="white" stroke="#456C9C" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M10.7 10.8L11.8 11.9L14.1 9.7" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <div class="footer-copy">
+              <strong>ScanBill Seller Dashboard</strong>
+              <span>Smart billing, inventory, and insights for everyday sellers</span>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="create-bill.html">Create Bill</a>
+            <a href="inventory.html" class="btn btn-secondary">Inventory</a>
+            <a href="#">AI Insights</a>
+            <a href="#">Billing History</a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    // Reveal on scroll
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    revealElements.forEach((el) => revealObserver.observe(el));
+  </script>
+</body>
+</html>

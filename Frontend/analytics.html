@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics & Insights - ScanBill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= DESIGN SYSTEM ================= */
+    :root{
+      --bg:#F8FBFF;
+      --white:#FFFFFF;
+      --card:#FFFFFF;
+
+      --light-blue:#DCEEFF;
+      --primary:#60A5FA;
+      --primary-2:#8B8CFF;
+      --soft-indigo:#A5B4FC;
+      --lavender:#DDD6FE;
+
+      --text:#334155;
+      --muted:#64748B;
+      --border:#E2E8F0;
+
+      --success:#16A34A;
+      --success-soft:#ECFDF3;
+      --warning:#D97706;
+      --warning-soft:#FFF7E8;
+      --danger:#DC2626;
+      --danger-soft:#FEF2F2;
+      --purple:#7C3AED;
+      --purple-soft:#F5F0FF;
+
+      --radius:16px;
+      --radius-lg:20px;
+
+      --shadow:0 12px 30px rgba(100,130,180,0.12);
+      --shadow-soft:0 8px 24px rgba(96,165,250,0.10);
+      --shadow-hover:0 18px 36px rgba(100,130,180,0.16);
+
+      --transition:all 0.28s ease;
+    }
+
+    /* ================= RESET ================= */
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:"Inter",sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(96,165,250,0.10), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(221,214,254,0.20), transparent 30%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    button{
+      font-family:inherit;
+      border:none;
+      cursor:pointer;
+      background:none;
+    }
+
+    /* ================= PAGE WRAPPER ================= */
+    .page{
+      max-width:1280px;
+      margin:0 auto;
+      padding:32px 40px 40px;
+    }
+
+    .section{
+      margin-bottom:32px;
+      animation:fadeUp 0.7s ease both;
+    }
+
+    .section.delay-1{ animation-delay:0.06s; }
+    .section.delay-2{ animation-delay:0.12s; }
+    .section.delay-3{ animation-delay:0.18s; }
+    .section.delay-4{ animation-delay:0.24s; }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(18px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* ================= HEADER ================= */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+    }
+
+    .brand-logo svg{
+      width:22px;
+      height:22px;
+    }
+
+    .page-heading h1{
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:6px;
+      line-height:1.15;
+    }
+
+    .page-heading p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:620px;
+    }
+
+    /* ================= BUTTON SYSTEM ================= */
+    .btn{
+      min-height:46px;
+      padding:0 18px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:600;
+      transition:var(--transition);
+      white-space:nowrap;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn:active{
+      transform:translateY(0);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,0.92);
+      border:1px solid #D8E6F6;
+      color:var(--text);
+      box-shadow:0 4px 12px rgba(120,150,200,0.06);
+    }
+
+    .btn-secondary:hover{
+      background:#F7FBFF;
+    }
+
+    /* ================= GENERIC CARD ================= */
+    .card{
+      background:rgba(255,255,255,0.94);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:24px;
+      box-shadow:var(--shadow);
+      transition:var(--transition);
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-hover);
+    }
+
+    /* ================= METRICS ================= */
+    .metrics-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .metric-card{
+      min-height:170px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .metric-card::before{
+      content:"";
+      position:absolute;
+      top:-40px;
+      right:-28px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .metric-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+      gap:14px;
+    }
+
+    .metric-icon{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .metric-icon.blue{ background:linear-gradient(135deg,#EAF4FF,#F2ECFF); }
+    .metric-icon.green{ background:linear-gradient(135deg,#EAFBF1,#F4FFF7); }
+    .metric-icon.purple{ background:linear-gradient(135deg,#F1EDFF,#FAF8FF); }
+    .metric-icon.amber{ background:linear-gradient(135deg,#FFF7E6,#FFFDF5); }
+
+    .metric-label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.03em;
+      margin-bottom:8px;
+    }
+
+    .metric-value{
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:10px;
+    }
+
+    .metric-note{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    /* ================= CHARTS ================= */
+    .charts-grid{
+      display:grid;
+      grid-template-columns:1.35fr 1fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+
+    .section-sub{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      margin-top:6px;
+    }
+
+    .chart-card{
+      min-height:420px;
+    }
+
+    .chart-wrap{
+      height:300px;
+      position:relative;
+      margin-top:10px;
+    }
+
+    canvas{
+      width:100% !important;
+      height:100% !important;
+    }
+
+    .chart-legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .legend-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+    }
+
+    /* ================= INSIGHTS ================= */
+    .insights-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .insight-card{
+      position:relative;
+      overflow:hidden;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .insight-card::after{
+      content:"";
+      position:absolute;
+      right:-28px;
+      bottom:-28px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .insight-top{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .insight-icon{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .insight-icon.fire{ background:linear-gradient(135deg,#FFF0E8,#FFF8F4); }
+    .insight-icon.warn{ background:linear-gradient(135deg,#FFF7E8,#FFFDF4); }
+    .insight-icon.spark{ background:linear-gradient(135deg,#EEF4FF,#F5F0FF); }
+    .insight-icon.slow{ background:linear-gradient(135deg,#F4F8FD,#FAFCFF); }
+
+    .insight-title{
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:8px;
+    }
+
+    .insight-main{
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:10px;
+      letter-spacing:-0.02em;
+    }
+
+    .insight-text{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* ================= RECOMMENDATIONS ================= */
+    .recommend-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .recommend-card{
+      min-height:210px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .recommend-card h3{
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin:16px 0 12px;
+      line-height:1.4;
+    }
+
+    .recommend-card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.85;
+    }
+
+    .recommend-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 13px;
+      border-radius:999px;
+      background:#F4F8FD;
+      border:1px solid #E4ECF6;
+      font-size:12px;
+      font-weight:800;
+      color:var(--text);
+      width:max-content;
+    }
+
+    /* ================= PERFORMANCE ================= */
+    .performance-grid{
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .category-list{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      margin-top:12px;
+    }
+
+    .category-row{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#FAFCFF;
+      border:1px solid #E8EFF7;
+      transition:var(--transition);
+    }
+
+    .category-row:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 20px rgba(100,130,180,0.08);
+    }
+
+    .category-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .category-head strong{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .category-head span{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .progress-track{
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background:#EEF4FA;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--primary),var(--soft-indigo));
+      width:0;
+      animation:growBar 1.4s ease forwards;
+    }
+
+    @keyframes growBar{
+      from{ width:0; }
+    }
+
+    .mini-insight-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .mini-insight{
+      padding:16px 18px;
+      border-radius:18px;
+      background:#FAFCFF;
+      border:1px solid #E8EFF7;
+    }
+
+    .mini-insight h4{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .mini-insight p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* ================= FOOTER ================= */
+    .footer{
+      text-align:center;
+      padding-top:8px;
+    }
+
+    .footer-brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .footer-brand .brand-logo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+    }
+
+    .footer p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 1180px){
+      .metrics-grid,
+      .insights-grid,
+      .recommend-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .charts-grid,
+      .performance-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 900px){
+      .page{
+        padding:24px;
+      }
+    }
+
+    @media (max-width: 768px){
+      .page{
+        padding:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .page-heading h1{
+        font-size:26px;
+      }
+
+      .metrics-grid,
+      .insights-grid,
+      .recommend-grid{
+        grid-template-columns:1fr;
+      }
+
+      .card{
+        padding:22px;
+      }
+    }
+
+    @media (max-width: 520px){
+      .page-heading p,
+      .section-sub,
+      .insight-text,
+      .recommend-card p,
+      .mini-insight p{
+        font-size:13px;
+      }
+
+      .metric-value{
+        font-size:30px;
+      }
+
+      .insight-main{
+        font-size:20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+
+    <!-- ================= HEADER ================= -->
+    <section class="section">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-logo">
+            <!-- ScanBill Logo -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="page-heading">
+            <h1>Analytics & Insights</h1>
+            <p>Understand your sales, stock, and business performance</p>
+          </div>
+        </div>
+
+        <a href="seller-dashboard.html" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Dashboard
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= OVERVIEW METRICS ================= -->
+    <section class="metrics-grid section delay-1">
+      <div class="card metric-card">
+        <div class="metric-top">
+          <div class="metric-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M6 14L10 10L13 13L18 8" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 8H14.5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              <path d="M18 8V11.5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="metric-label">Total Sales</div>
+          <div class="metric-value">₹18,420</div>
+          <div class="metric-note">Overall revenue generated from recent billing activity.</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-top">
+          <div class="metric-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="6" width="16" height="12" rx="3" stroke="#16A34A" stroke-width="2"/>
+              <path d="M4 10H20" stroke="#16A34A" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="metric-label">Total Orders</div>
+          <div class="metric-value">268</div>
+          <div class="metric-note">Transactions recorded through ScanBill billing flows.</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-top">
+          <div class="metric-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="metric-label">Top Selling Item</div>
+          <div class="metric-value">Maggi</div>
+          <div class="metric-note">Highest contributing item across your recent sales.</div>
+        </div>
+      </div>
+
+      <div class="card metric-card">
+        <div class="metric-top">
+          <div class="metric-icon amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M6 15L10 11L13 14L18 9" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 9V12.5" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+              <path d="M18 9H14.5" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="metric-label">Revenue Growth</div>
+          <div class="metric-value">+12.8%</div>
+          <div class="metric-note">Sales performance compared to the previous period.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHARTS SECTION ================= -->
+    <section class="charts-grid section delay-2">
+
+      <div class="card chart-card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 18H19" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 15L11 11L14 14L18 9" stroke="#60A5FA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Sales Trend
+            </div>
+            <div class="section-sub">Track how your business is performing across the week.</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="salesChart"></canvas>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#60A5FA;"></span>
+            Weekly Sales
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#A5B4FC;"></span>
+            Performance Trend
+          </div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6 18V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 18V8" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 18V5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Product Performance
+            </div>
+            <div class="section-sub">See which products contribute most to revenue.</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="productChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= AI INSIGHTS ================= -->
+    <section class="section delay-3">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+            Smart Insights
+          </div>
+          <div class="section-sub">Useful patterns surfaced from your recent billing and sales activity.</div>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon fire">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 4C13 7 9 8.5 9 12C9 14.2 10.8 16 13 16C15.2 16 17 14.2 17 12C17 9.5 15.8 8.2 15.2 7.5C14.7 6.9 14 6.2 13 4Z" stroke="#F97316" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Top Selling</div>
+            <div class="insight-main">Maggi</div>
+            <div class="insight-text">Maggi is contributing the highest order volume and is consistently driving repeat sales.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon warn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 9V13" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="12" cy="17" r="1" fill="#D97706"/>
+                  <path d="M10.3 4.9L3.8 16.3C3.1 17.6 4 19.2 5.5 19.2H18.5C20 19.2 20.9 17.6 20.2 16.3L13.7 4.9C13 3.7 11 3.7 10.3 4.9Z" stroke="#D97706" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Low Stock</div>
+            <div class="insight-main">Coke</div>
+            <div class="insight-text">Coke stock is moving down faster than expected and may need timely restocking soon.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon spark">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" stroke="#7C3AED" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Restock Suggestion</div>
+            <div class="insight-main">Snacks before weekend</div>
+            <div class="insight-text">Snack items show stronger evening demand and may perform better with weekend restocking.</div>
+          </div>
+        </div>
+
+        <div class="card insight-card">
+          <div>
+            <div class="insight-top">
+              <div class="insight-icon slow">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="8.5" stroke="#64748B" stroke-width="1.8"/>
+                  <path d="M12 8V12L14.8 14.2" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insight-title">Slow Moving</div>
+            <div class="insight-main">Biscuits</div>
+            <div class="insight-text">Biscuits are generating slower movement and may benefit from reduced inventory planning.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RECOMMENDATIONS ================= -->
+    <section class="section delay-4">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 4L19 8V16L12 20L5 16V8L12 4Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M9.5 12.2L11.3 14L14.8 10.5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Recommendations
+          </div>
+          <div class="section-sub">Actionable suggestions to improve sales performance and stock readiness.</div>
+        </div>
+      </div>
+
+      <div class="recommend-grid">
+        <div class="card recommend-card">
+          <div class="recommend-badge">Stock Planning</div>
+          <h3>Restock fast-selling items before weekend</h3>
+          <p>Weekend demand appears stronger for snack-based purchases. Keeping fast movers ready can reduce missed sales.</p>
+        </div>
+
+        <div class="card recommend-card">
+          <div class="recommend-badge">Inventory Control</div>
+          <h3>Reduce stock of slower-moving items</h3>
+          <p>Biscuits and lower-performing items may be stocked in smaller quantities to optimize shelf usage.</p>
+        </div>
+
+        <div class="card recommend-card">
+          <div class="recommend-badge">Sales Opportunity</div>
+          <h3>Promote beverages for higher basket value</h3>
+          <p>Combining beverages with snacks may increase average order value during peak hours.</p>
+        </div>
+
+        <div class="card recommend-card">
+          <div class="recommend-badge">Pattern Tracking</div>
+          <h3>Track evening sales for better stocking</h3>
+          <p>Your sales trend suggests stronger late-day purchases, especially in ready-to-eat categories.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PERFORMANCE ================= -->
+    <section class="performance-grid section">
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6 18V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 18V8" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 18V5" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Category Performance
+            </div>
+            <div class="section-sub">Understand how different product groups contribute to revenue.</div>
+          </div>
+        </div>
+
+        <div class="category-list">
+          <div class="category-row">
+            <div class="category-head">
+              <strong>Snacks</strong>
+              <span>40% Revenue</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:40%;"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <strong>Beverages</strong>
+              <span>30% Revenue</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:30%;"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <strong>Grocery</strong>
+              <span>20% Revenue</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:20%;"></div>
+            </div>
+          </div>
+
+          <div class="category-row">
+            <div class="category-head">
+              <strong>Dairy & Others</strong>
+              <span>10% Revenue</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:10%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <div class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              </svg>
+              Performance Notes
+            </div>
+            <div class="section-sub">Simple observations based on recent seller activity.</div>
+          </div>
+        </div>
+
+        <div class="mini-insight-list">
+          <div class="mini-insight">
+            <h4>Best Selling Window</h4>
+            <p>Evening purchases are slightly stronger than morning sales for quick-consumption items.</p>
+          </div>
+
+          <div class="mini-insight">
+            <h4>Basket Pattern</h4>
+            <p>Snack + beverage combinations are frequently purchased together and increase order value.</p>
+          </div>
+
+          <div class="mini-insight">
+            <h4>Operational Focus</h4>
+            <p>Keeping top 5 fast-moving products stocked can significantly improve daily sales continuity.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer section">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>ScanBill</span>
+      </div>
+
+      <p>Insights generated based on your billing data</p>
+      <p>Built for Hackathon 2026</p>
+    </footer>
+
+  </main>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // ================= SALES LINE CHART =================
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+
+    new Chart(salesCtx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Sales',
+          data: [1800, 2200, 2100, 2600, 2400, 3100, 2900],
+          borderColor: '#60A5FA',
+          backgroundColor: 'rgba(96, 165, 250, 0.12)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#60A5FA',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1400,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#FFFFFF',
+            titleColor: '#334155',
+            bodyColor: '#64748B',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              }
+            },
+            border: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              },
+              callback: value => '₹' + value
+            },
+            grid: {
+              color: 'rgba(148, 163, 184, 0.12)'
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+
+    // ================= PRODUCT BAR CHART =================
+    const productCtx = document.getElementById('productChart').getContext('2d');
+
+    new Chart(productCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Maggi', 'Coke', 'Biscuit', 'Milk', 'Bread'],
+        datasets: [{
+          label: 'Sales',
+          data: [48, 36, 18, 24, 12],
+          backgroundColor: [
+            '#60A5FA',
+            '#A5B4FC',
+            '#DDD6FE',
+            '#93C5FD',
+            '#C4B5FD'
+          ],
+          borderRadius: 12,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1400,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#FFFFFF',
+            titleColor: '#334155',
+            bodyColor: '#64748B',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
+            padding: 12,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              }
+            },
+            border: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#64748B',
+              font: {
+                family: 'Inter'
+              }
+            },
+            grid: {
+              color: 'rgba(148, 163, 184, 0.12)'
+            },
+            border: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

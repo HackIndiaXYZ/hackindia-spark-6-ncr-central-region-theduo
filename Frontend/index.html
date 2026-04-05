@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScanBill — Smart QR Billing for Local Businesses</title>
+  <meta
+    name="description"
+    content="ScanBill transforms QR payments into digital bills, inventory updates, and smart business insights for local sellers and small businesses."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      /* Core Palette */
+      --white: #ffffff;
+      --bg-main: #f5f9ff;
+      --bg-soft: #eef5ff;
+      --bg-card: rgba(255, 255, 255, 0.78);
+      --bg-card-strong: rgba(255, 255, 255, 0.92);
+
+      --blue-100: #dceeff;
+      --blue-200: #cfe5ff;
+      --blue-300: #b8dbff;
+      --blue-400: #8fc5ff;
+      --blue-500: #60a5fa;
+
+      --indigo-200: #c7d2fe;
+      --indigo-300: #a5b4fc;
+
+      --lavender-200: #ddd6fe;
+      --lavender-300: #e9d5ff;
+      --lavender-400: #d8b4fe;
+
+      --text-main: #1f3348;
+      --text-secondary: #52657b;
+      --text-light: #6f8297;
+
+      --border: rgba(149, 177, 214, 0.22);
+      --border-strong: rgba(122, 153, 193, 0.32);
+
+      --shadow-sm: 0 8px 24px rgba(104, 142, 194, 0.08);
+      --shadow-md: 0 16px 40px rgba(103, 133, 183, 0.12);
+      --shadow-lg: 0 22px 70px rgba(100, 131, 183, 0.16);
+
+      --radius-xs: 12px;
+      --radius-sm: 16px;
+      --radius-md: 22px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+
+      --transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+      --container: 1240px;
+      --nav-height: 84px;
+    }
+
+    /* =========================
+       RESET
+    ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(96, 165, 250, 0.16), transparent 24%),
+        radial-gradient(circle at 90% 12%, rgba(221, 214, 254, 0.32), transparent 28%),
+        radial-gradient(circle at 78% 72%, rgba(233, 213, 255, 0.22), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #f3f8ff 40%, #f7fbff 100%);
+      overflow-x: hidden;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      border-radius: 999px;
+      filter: blur(80px);
+      opacity: 0.55;
+      z-index: -2;
+      animation: blobFloat 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    body::before {
+      background: rgba(96, 165, 250, 0.22);
+      top: -80px;
+      left: -80px;
+    }
+
+    body::after {
+      background: rgba(216, 180, 254, 0.24);
+      right: -120px;
+      top: 220px;
+      animation-delay: 2s;
+    }
+
+    @keyframes blobFloat {
+      0%, 100% {
+        transform: translateY(0) translateX(0) scale(1);
+      }
+      50% {
+        transform: translateY(18px) translateX(12px) scale(1.06);
+      }
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      border: none;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .container {
+      width: min(100% - 40px, var(--container));
+      margin-inline: auto;
+    }
+
+    .section {
+      padding: 110px 0;
+      position: relative;
+    }
+
+    .section-sm {
+      padding: 90px 0;
+    }
+
+    .section-header {
+      max-width: 760px;
+      margin: 0 auto 56px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(14px);
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500), var(--lavender-400));
+      box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.12);
+    }
+
+    h1, h2, h3, h4 {
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 5vw, 4.9rem);
+      font-weight: 800;
+      margin-bottom: 22px;
+      max-width: 12ch;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 3vw, 3.1rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    p.lead {
+      font-size: clamp(1rem, 1.4vw, 1.14rem);
+      color: var(--text-secondary);
+      max-width: 64ch;
+      margin: 0 auto;
+    }
+
+    .text-muted {
+      color: var(--text-light);
+      font-size: 0.98rem;
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .gradient-border {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .gradient-border::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.4), rgba(216, 180, 254, 0.4));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      z-index: -1;
+      opacity: 0.9;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================= */
+    .btn-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 22px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+      will-change: transform;
+      min-height: 54px;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(2px) scale(0.985);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #5ea8ff 0%, #8d95ff 100%);
+      color: white;
+      box-shadow: 0 18px 35px rgba(96, 165, 250, 0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 22px 40px rgba(96, 165, 250, 0.34);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--border-strong);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px) scale(1.02);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 36px rgba(126, 156, 204, 0.16);
+    }
+
+    .btn-icon {
+      width: 18px;
+      height: 18px;
+      transition: transform var(--transition);
+    }
+
+    .btn:hover .btn-icon {
+      transform: translateX(3px);
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      padding: 18px 0;
+      transition: padding var(--transition), background var(--transition), box-shadow var(--transition), border-color var(--transition);
+      border-bottom: 1px solid transparent;
+    }
+
+    .navbar.scrolled {
+      padding: 12px 0;
+      background: rgba(255, 255, 255, 0.66);
+      backdrop-filter: blur(18px);
+      border-bottom-color: rgba(153, 177, 210, 0.18);
+      box-shadow: 0 10px 40px rgba(116, 145, 186, 0.08);
+    }
+
+    .nav-shell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.52);
+      border: 1px solid rgba(180, 201, 230, 0.22);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #dff0ff 0%, #e9d5ff 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 12px 26px rgba(116, 147, 191, 0.14);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 45%);
+      pointer-events: none;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.05;
+    }
+
+    .brand-text span {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-left: auto;
+      margin-right: 12px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      position: relative;
+      transition: color var(--transition);
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue-500), var(--lavender-400));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+    .hero {
+      padding: 48px 0 70px;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 42px;
+    }
+
+    .hero-copy {
+      padding-right: 10px;
+    }
+
+    .hero-copy .lead {
+      margin: 0 0 18px;
+      max-width: 62ch;
+      text-align: left;
+      font-size: 1.08rem;
+    }
+
+    .hero-support {
+      color: var(--text-light);
+      font-size: 1rem;
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-badge .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500), var(--lavender-400));
+      box-shadow: 0 0 0 5px rgba(96,165,250,0.12);
+    }
+
+    .hero-visual-wrap {
+      position: relative;
+      min-height: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: auto;
+      width: 500px;
+      height: 500px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(96,165,250,0.18) 0%, rgba(221,214,254,0.18) 35%, transparent 72%);
+      filter: blur(12px);
+      z-index: 0;
+      animation: pulseGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.88;
+      }
+      50% {
+        transform: scale(1.06);
+        opacity: 1;
+      }
+    }
+
+    .hero-device {
+      width: min(100%, 520px);
+      min-height: 500px;
+      border-radius: 34px;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(247,251,255,0.9));
+      border: 1px solid rgba(169, 196, 231, 0.28);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-device::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 28%),
+        linear-gradient(135deg, rgba(96,165,250,0.08), rgba(221,214,254,0.12));
+      pointer-events: none;
+    }
+
+    .device-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .device-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-card {
+      border-radius: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(177, 201, 230, 0.28);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(14px);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 44px rgba(106, 138, 187, 0.16);
+    }
+
+    .dashboard-card.soft-blue {
+      background: linear-gradient(180deg, rgba(225, 240, 255, 0.82), rgba(255,255,255,0.82));
+    }
+
+    .dashboard-card.soft-purple {
+      background: linear-gradient(180deg, rgba(241, 233, 255, 0.78), rgba(255,255,255,0.84));
+    }
+
+    .dashboard-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qr-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 20px;
+      background:
+        linear-gradient(90deg, rgba(31,51,72,0.06) 1px, transparent 1px),
+        linear-gradient(rgba(31,51,72,0.06) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(96,165,250,0.12), rgba(221,214,254,0.16));
+      background-size: 18px 18px, 18px 18px, auto;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(155, 184, 219, 0.18);
+    }
+
+    .qr-corners span {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 3px solid #5f84b1;
+      border-radius: 8px;
+    }
+
+    .qr-corners span:nth-child(1) { top: 16px; left: 16px; border-right: none; border-bottom: none; }
+    .qr-corners span:nth-child(2) { top: 16px; right: 16px; border-left: none; border-bottom: none; }
+    .qr-corners span:nth-child(3) { bottom: 16px; left: 16px; border-right: none; border-top: none; }
+    .qr-corners span:nth-child(4) { bottom: 16px; right: 16px; border-left: none; border-top: none; }
+
+    .qr-center {
+      position: absolute;
+      inset: 50%;
+      transform: translate(-50%, -50%);
+      width: 72%;
+      height: 72%;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .qr-center i {
+      display: block;
+      border-radius: 4px;
+      background: rgba(31,51,72,0.18);
+    }
+
+    .qr-center i:nth-child(odd) {
+      background: rgba(96,165,250,0.42);
+    }
+
+    .amount-chip {
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .bill-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bill-item,
+    .stock-item,
+    .insight-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mini-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(96,165,250,0.18), rgba(221,214,254,0.24));
+      flex-shrink: 0;
+    }
+
+    .line-meta strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .line-meta span {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .pill-value {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .summary-chip {
+      position: absolute;
+      border-radius: 18px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(176, 198, 229, 0.28);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(16px);
+      z-index: 3;
+      animation: floatSoft 5.8s ease-in-out infinite;
+      min-width: 190px;
+    }
+
+    .summary-chip:nth-child(1) { top: 28px; right: -18px; }
+    .summary-chip:nth-child(2) { bottom: 54px; left: -20px; animation-delay: 1.3s; }
+    .summary-chip:nth-child(3) { bottom: 12px; right: 28px; animation-delay: 2.4s; }
+
+    .summary-chip strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .summary-chip span {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    @keyframes floatSoft {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* =========================
+       GRIDS / CARDS
+    ========================= */
+    .grid {
+      display: grid;
+      gap: 22px;
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .info-card {
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(172, 198, 230, 0.22);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(16px);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent 35%);
+      pointer-events: none;
+    }
+
+    .info-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 44px rgba(104, 138, 188, 0.16);
+      border-color: rgba(96, 165, 250, 0.26);
+    }
+
+    .card-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(207,229,255,0.82), rgba(233,213,255,0.72));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
+      transition: transform var(--transition);
+    }
+
+    .info-card:hover .card-icon {
+      transform: translateY(-3px) rotate(-4deg);
+    }
+
+    .card-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(245, 249, 255, 0.92);
+      border: 1px solid rgba(176, 199, 229, 0.18);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .problem-title {
+      color: #d04f7d;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .solution-title {
+      color: #4b84d8;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .card-text {
+      color: var(--text-secondary);
+      font-size: 0.97rem;
+    }
+
+    /* =========================
+       HOW IT WORKS
+    ========================= */
+    .steps-wrap {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .steps-line {
+      position: absolute;
+      top: 44px;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(96,165,250,0.22), rgba(216,180,254,0.32));
+      z-index: 0;
+    }
+
+    .steps-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .step-card {
+      padding: 28px 24px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(173, 198, 230, 0.24);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(16px);
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      min-height: 230px;
+    }
+
+    .step-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 44px rgba(104, 138, 188, 0.16);
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(216,180,254,0.24));
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    /* =========================
+       AI INSIGHTS
+    ========================= */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .insight-panel {
+      padding: 28px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(170, 196, 228, 0.24);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .insight-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.72), transparent 30%);
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 14px;
+    }
+
+    .panel-header h3 {
+      margin-bottom: 0;
+      font-size: 1.3rem;
+    }
+
+    .panel-chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mini-panel-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(245,249,255,0.92));
+      border: 1px solid rgba(175, 199, 230, 0.22);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .mini-panel-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 34px rgba(106, 138, 187, 0.14);
+    }
+
+    .mini-panel-card .value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.03em;
+    }
+
+    .mini-panel-card .hint {
+      color: var(--text-light);
+      font-size: 0.92rem;
+    }
+
+    .positive {
+      color: #2e8d73;
+    }
+
+    .alert {
+      color: #d97706;
+    }
+
+    .accent {
+      color: #4f7bd8;
+    }
+
+    /* =========================
+       AUDIENCE
+    ========================= */
+    .audience-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .audience-chip {
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(175, 198, 228, 0.22);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+      color: var(--text-secondary);
+      min-width: 180px;
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .audience-chip:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 34px rgba(106, 138, 187, 0.14);
+    }
+
+    /* =========================
+       FINAL CTA
+    ========================= */
+    .cta-box {
+      padding: 64px 44px;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.72), transparent 22%),
+        radial-gradient(circle at 84% 20%, rgba(233,213,255,0.4), transparent 20%),
+        linear-gradient(135deg, rgba(210,234,255,0.88), rgba(233,213,255,0.82));
+      border: 1px solid rgba(174, 199, 230, 0.26);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      isolation: isolate;
+    }
+
+    .cta-box::before,
+    .cta-box::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(18px);
+      opacity: 0.72;
+      z-index: -1;
+    }
+
+    .cta-box::before {
+      width: 220px;
+      height: 220px;
+      background: rgba(96,165,250,0.22);
+      left: -40px;
+      bottom: -60px;
+    }
+
+    .cta-box::after {
+      width: 200px;
+      height: 200px;
+      background: rgba(216,180,254,0.28);
+      right: -30px;
+      top: -40px;
+    }
+
+    .cta-box h2 {
+      max-width: 14ch;
+      margin: 0 auto 16px;
+    }
+
+    .cta-box p {
+      max-width: 680px;
+      margin: 0 auto 28px;
+      color: var(--text-secondary);
+      font-size: 1.03rem;
+    }
+
+    .cta-actions {
+      justify-content: center;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+    .footer {
+      padding: 54px 0 44px;
+      position: relative;
+    }
+
+    .footer-shell {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 28px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(176, 199, 230, 0.22);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(16px);
+      flex-wrap: wrap;
+    }
+
+    .footer-left {
+      max-width: 360px;
+    }
+
+    .footer-left p {
+      color: var(--text-secondary);
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+
+    .footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 22px;
+      align-content: flex-start;
+      padding-top: 8px;
+    }
+
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 14px;
+      transition: color var(--transition);
+    }
+
+    .footer-nav a:hover {
+      color: var(--text-main);
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* =========================
+       REVEAL ANIMATIONS
+    ========================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: transform, opacity;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.05s; }
+    .stagger-2 { transition-delay: 0.12s; }
+    .stagger-3 { transition-delay: 0.18s; }
+    .stagger-4 { transition-delay: 0.24s; }
+    .stagger-5 { transition-delay: 0.30s; }
+    .stagger-6 { transition-delay: 0.36s; }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 1120px) {
+      .hero-grid,
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        padding-right: 0;
+      }
+
+      .hero-visual-wrap {
+        min-height: 580px;
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .steps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .steps-line {
+        display: none;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .nav-shell {
+        border-radius: 24px;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .hero-visual-wrap {
+        min-height: 520px;
+      }
+
+      .summary-chip:nth-child(1) { top: 16px; right: 6px; }
+      .summary-chip:nth-child(2) { left: 6px; bottom: 70px; }
+      .summary-chip:nth-child(3) { right: 12px; bottom: 6px; }
+
+      .panel-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .section {
+        padding: 84px 0;
+      }
+
+      .section-header {
+        margin-bottom: 38px;
+      }
+
+      .grid-4,
+      .grid-3,
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        gap: 34px;
+      }
+
+      .hero-visual-wrap {
+        min-height: 480px;
+      }
+
+      .hero-device {
+        padding: 18px;
+        min-height: 460px;
+      }
+
+      .device-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-chip {
+        position: static;
+        margin-top: 14px;
+        animation: none;
+      }
+
+      .hero-visual-wrap {
+        display: block;
+      }
+
+      .hero-glow {
+        width: 100%;
+        height: 340px;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .btn-row {
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .cta-box {
+        padding: 46px 24px;
+      }
+
+      .footer-shell {
+        padding: 24px 20px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        width: min(100% - 28px, var(--container));
+      }
+
+      .nav-shell {
+        padding: 12px 14px;
+      }
+
+      .brand-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+      }
+
+      .hero-badge {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .info-card,
+      .step-card,
+      .insight-panel {
+        padding: 22px;
+      }
+
+      .cta-box h2 {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================
+       NAVBAR
+  ========================= -->
+  <header class="navbar" id="top">
+    <div class="container">
+      <div class="nav-shell">
+        <a href="#top" class="brand" aria-label="ScanBill home">
+          <div class="brand-mark" aria-hidden="true">
+            <!-- Custom ScanBill Logo -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <!-- Scan corners -->
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+
+              <!-- Receipt -->
+              <path d="M9.2 7.5H14.8C15.35 7.5 15.8 7.95 15.8 8.5V14.4L14.9 13.7L14 14.4L13.1 13.7L12.2 14.4L11.3 13.7L10.4 14.4L9.2 13.5V8.5C9.2 7.95 9.65 7.5 10.2 7.5Z" fill="white" stroke="#456C9C" stroke-width="1.4" stroke-linejoin="round"/>
+              <!-- Check -->
+              <path d="M10.7 10.8L11.8 11.9L14.1 9.7" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <strong>ScanBill</strong>
+            <span>Scan. Pay. Bill. Track.</span>
+          </div>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#ai-insights">AI Insights</a>
+          <a href="#demo">Demo</a>
+        </nav>
+
+        <div class="nav-cta">
+          <a href="seller-dashboard.html" class="btn btn-primary">
+            Explore Demo
+            <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M13 6L19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7H20" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 12H20" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 17H20" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================
+       HERO
+  ========================= -->
+  <section class="hero section-sm">
+    <div class="container hero-grid">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Smart billing for local businesses
+        </div>
+
+        <h1>Every Payment Becomes a Business Record</h1>
+
+        <p class="lead">
+          ScanBill transforms QR payments into digital bills, inventory updates, and smart business insights — all in one simple flow.
+        </p>
+
+        <p class="hero-support">
+          Built for everyday sellers who need more than just payments.
+        </p>
+
+        <div class="btn-row">
+          <a href="seller-dashboard.html" class="btn btn-primary">
+            Explore Demo
+            <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M13 6L19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <a href="#how-it-works" class="btn btn-secondary">
+            View How It Works
+          </a>
+        </div>
+
+        <div class="hero-badges">
+          <div class="hero-badge"><span class="dot"></span> Smart QR Payments</div>
+          <div class="hero-badge"><span class="dot"></span> Auto Billing</div>
+          <div class="hero-badge"><span class="dot"></span> Inventory Sync</div>
+          <div class="hero-badge"><span class="dot"></span> AI Insights</div>
+        </div>
+      </div>
+
+      <div class="hero-visual-wrap reveal stagger-2">
+        <div class="hero-glow"></div>
+
+        <!-- <div class="summary-chip">
+          <strong>₹18,240 this week</strong>
+          <span>Sales summary auto-tracked</span>
+        </div>
+
+        <div class="summary-chip">
+          <strong>Low stock alert</strong>
+          <span>Rice Bags — only 4 left</span>
+        </div>
+
+        <div class="summary-chip">
+          <strong>AI Tip</strong>
+          <span>Restock soap sachets before weekend</span>
+        </div> -->
+
+        <div class="hero-device gradient-border">
+          <div class="device-top">
+            <div class="device-pill">
+              <span style="width:8px;height:8px;border-radius:50%;background:#60A5FA;"></span>
+              Live Seller Dashboard
+            </div>
+            <div class="device-pill">Smart Billing Flow</div>
+          </div>
+
+          <div class="device-grid">
+            <div class="dashboard-card soft-blue">
+              <h4>
+                <span class="mini-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                QR Payment Card
+              </h4>
+
+              <div class="qr-box">
+                <div class="qr-corners">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="qr-center">
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+
+              <div class="amount-chip">Payment Amount — ₹460</div>
+            </div>
+
+            <div style="display:grid; gap:16px;">
+              <div class="dashboard-card soft-purple">
+                <h4>
+                  <span class="mini-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M8 5H16L18 7V19H6V7L8 5Z" stroke="#456C9C" stroke-width="1.7" stroke-linejoin="round"/>
+                      <path d="M9 10H15" stroke="#60A5FA" stroke-width="1.7" stroke-linecap="round"/>
+                      <path d="M9 13H15" stroke="#60A5FA" stroke-width="1.7" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  Bill Preview
+                </h4>
+
+                <div class="bill-list">
+                  <div class="bill-item">
+                    <div class="line-meta">
+                      <strong>Milk Packets</strong>
+                      <span>2 × ₹30</span>
+                    </div>
+                    <div class="pill-value">₹60</div>
+                  </div>
+
+                  <div class="bill-item">
+                    <div class="line-meta">
+                      <strong>Biscuits</strong>
+                      <span>4 × ₹20</span>
+                    </div>
+                    <div class="pill-value">₹80</div>
+                  </div>
+
+                  <div class="bill-item">
+                    <div class="line-meta">
+                      <strong>Cooking Oil</strong>
+                      <span>1 × ₹320</span>
+                    </div>
+                    <div class="pill-value">₹320</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dashboard-card">
+                <h4>
+                  <span class="mini-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M6 8.5H18" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                      <path d="M6 12H18" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                      <path d="M6 15.5H14" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  Inventory Mini Panel
+                </h4>
+
+                <div class="bill-list">
+                  <div class="stock-item">
+                    <div class="line-meta">
+                      <strong>Rice Bags</strong>
+                      <span>Stock running low</span>
+                    </div>
+                    <div class="pill-value">4 left</div>
+                  </div>
+
+                  <div class="stock-item">
+                    <div class="line-meta">
+                      <strong>Cold Drinks</strong>
+                      <span>Healthy stock</span>
+                    </div>
+                    <div class="pill-value">22 left</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;" class="dashboard-card">
+            <h4>
+              <span class="mini-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 16L10 12L13 14L18 8" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18 8V12" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              AI Insight Card
+            </h4>
+
+            <div class="insight-row">
+              <div class="line-meta">
+                <strong>Top-selling item today</strong>
+                <span>Biscuits are selling 22% faster than average</span>
+              </div>
+              <div class="pill-value">+22%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       PROBLEM / VALUE
+  ========================= -->
+  <section class="section" id="value">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Why it matters
+        </div>
+        <h2>Why Small Businesses Need More Than Just Payments</h2>
+        <p class="lead">
+          Most payment apps stop at payment. ScanBill goes further by turning every transaction into a smart business action.
+        </p>
+      </div>
+
+      <div class="grid grid-4">
+        <article class="info-card reveal stagger-1">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 12H18" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 6V18" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">Payment Accuracy</div>
+          <div class="problem-title">Problem: Manual amount entry</div>
+          <div class="solution-title">Solution: Dynamic amount-based QR</div>
+          <p class="card-text">
+            Reduce mistakes and speed up checkout by generating exact payment amounts automatically.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-2">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5H16L18 7V19H6V7L8 5Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M9 10H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 13H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">Billing Clarity</div>
+          <div class="problem-title">Problem: No proper bill records</div>
+          <div class="solution-title">Solution: Automatic digital invoices</div>
+          <p class="card-text">
+            Every successful payment creates a clean, shareable bill for both seller and customer.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-3">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 8.5H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M5 12H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M5 15.5H14" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">Stock Visibility</div>
+          <div class="problem-title">Problem: No stock tracking</div>
+          <div class="solution-title">Solution: Inventory updates from bills</div>
+          <p class="card-text">
+            Product movement gets recorded in the background, so sellers always know what’s moving.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-4">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 16L10 12L13 14L18 8" stroke="#456C9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 8V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">Smart Decisions</div>
+          <div class="problem-title">Problem: No business insights</div>
+          <div class="solution-title">Solution: Smart analytics and AI suggestions</div>
+          <p class="card-text">
+            Surface useful patterns like best-selling products, low stock alerts, and restock timing.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       FEATURES
+  ========================= -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Core product features
+        </div>
+        <h2>Everything a Small Business Needs — In One Flow</h2>
+        <p class="lead">
+          Designed to make billing, payments, and business tracking feel simple, fast, and reliable.
+        </p>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="info-card reveal stagger-1">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Smart QR Payments</h3>
+          <p class="card-text">
+            Generate exact-amount QR codes instantly for faster, cleaner, and error-free payments.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-2">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5H16L18 7V19H6V7L8 5Z" stroke="#456C9C" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M9 10H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 13H15" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Auto Digital Billing</h3>
+          <p class="card-text">
+            Every payment automatically creates a digital invoice for both seller and customer.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-3">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 8.5H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M5 12H19" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M5 15.5H14" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Inventory Sync</h3>
+          <p class="card-text">
+            Bills marked as stock purchases automatically update inventory without manual entry.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-4">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 16L10 12L13 14L18 8" stroke="#456C9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M18 8V12" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Smart Business Insights</h3>
+          <p class="card-text">
+            Track what’s selling, what’s low in stock, and what to restock before it runs out.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-5">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M7 17C8.5 15.5 10.2 14.8 12 14.8C13.8 14.8 15.5 15.5 17 17" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="9" r="3" stroke="#60A5FA" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3>Customer Spending Summary</h3>
+          <p class="card-text">
+            Help customers understand where their money goes and build trust with transparent records.
+          </p>
+        </article>
+
+        <article class="info-card reveal stagger-6">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M7 7H17" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 12H17" stroke="#456C9C" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 17H13" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Better Record Keeping</h3>
+          <p class="card-text">
+            Maintain organized transaction history for smoother business management and easier follow-ups.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       HOW IT WORKS
+  ========================= -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Clear in one glance
+        </div>
+        <h2>How ScanBill Works</h2>
+        <p class="lead">
+          A simple 4-step flow that turns a normal payment into a useful business system.
+        </p>
+      </div>
+
+      <div class="steps-wrap">
+        <div class="steps-line"></div>
+
+        <div class="steps-grid">
+          <article class="step-card reveal stagger-1">
+            <div class="step-number">01</div>
+            <h3>Seller Selects Items</h3>
+            <p class="card-text">
+              The seller quickly chooses the purchased items from a simple product list.
+            </p>
+          </article>
+
+          <article class="step-card reveal stagger-2">
+            <div class="step-number">02</div>
+            <h3>Smart QR Is Generated</h3>
+            <p class="card-text">
+              ScanBill automatically creates the exact payment amount as a ready-to-scan QR.
+            </p>
+          </article>
+
+          <article class="step-card reveal stagger-3">
+            <div class="step-number">03</div>
+            <h3>Customer Pays & Bill Is Created</h3>
+            <p class="card-text">
+              Once payment is successful, a digital bill is instantly created and saved.
+            </p>
+          </article>
+
+          <article class="step-card reveal stagger-4">
+            <div class="step-number">04</div>
+            <h3>Inventory + Insights Update Automatically</h3>
+            <p class="card-text">
+              Stock, sales records, and useful business insights are updated in the background.
+            </p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       AI INSIGHTS
+  ========================= -->
+  <section class="section" id="ai-insights">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Useful, not overcomplicated
+        </div>
+        <h2>Not Just Payments — Smarter Business Decisions</h2>
+        <p class="lead">
+          ScanBill helps sellers and customers understand their transactions through smart insights.
+        </p>
+      </div>
+
+      <div class="insights-grid">
+        <!-- Seller Panel -->
+        <div class="insight-panel reveal stagger-1">
+          <div class="panel-header">
+            <h3>Seller Intelligence Panel</h3>
+            <div class="panel-chip">For shopkeepers & merchants</div>
+          </div>
+
+          <div class="panel-cards">
+            <div class="mini-panel-card">
+              <div class="value accent">Milk Packets</div>
+              <strong>Top Selling Product</strong>
+              <p class="hint">Highest repeat purchases this week</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value alert">Only 4 left</div>
+              <strong>Low Stock Alert</strong>
+              <p class="hint">Rice bags are running low</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value positive">Restock Soap</div>
+              <strong>Restock Suggestion</strong>
+              <p class="hint">Demand is likely to rise this weekend</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value accent">₹18,240</div>
+              <strong>Sales Summary</strong>
+              <p class="hint">Weekly sales auto-organized</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Panel -->
+        <div class="insight-panel reveal stagger-2">
+          <div class="panel-header">
+            <h3>Customer Summary Panel</h3>
+            <div class="panel-chip">For everyday buyers</div>
+          </div>
+
+          <div class="panel-cards">
+            <div class="mini-panel-card">
+              <div class="value accent">₹2,860</div>
+              <strong>Monthly Spending</strong>
+              <p class="hint">All payments grouped into one summary</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value positive">Groceries</div>
+              <strong>Top Purchase Category</strong>
+              <p class="hint">Most frequent spending category</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value alert">Spend mindfully</div>
+              <strong>Spending Tip</strong>
+              <p class="hint">Weekly essentials spending is increasing</p>
+            </div>
+
+            <div class="mini-panel-card">
+              <div class="value accent">+12%</div>
+              <strong>Spending Trend</strong>
+              <p class="hint">Compared to last month</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       WHO IS IT FOR
+  ========================= -->
+  <section class="section" id="audience">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Made for real local businesses
+        </div>
+        <h2>Built for India’s Everyday Sellers</h2>
+        <p class="lead">
+          Designed for the businesses that keep local communities running.
+        </p>
+      </div>
+
+      <div class="audience-wrap">
+        <div class="audience-chip reveal stagger-1">Kirana Stores</div>
+        <div class="audience-chip reveal stagger-2">Stationery Shops</div>
+        <div class="audience-chip reveal stagger-3">Cafes</div>
+        <div class="audience-chip reveal stagger-4">Cosmetic Shops</div>
+        <div class="audience-chip reveal stagger-5">General Stores</div>
+        <div class="audience-chip reveal stagger-6">Wholesalers</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       FINAL CTA
+  ========================= -->
+  <section class="section" id="demo">
+    <div class="container">
+      <div class="cta-box reveal">
+        <div class="eyebrow" style="margin-inline:auto;">
+          <span class="eyebrow-dot"></span>
+          Experience the full product flow
+        </div>
+
+        <h2>See ScanBill in Action</h2>
+        <p>
+          Explore how one payment can automatically create bills, update stock, and unlock smart insights.
+        </p>
+
+        <div class="btn-row cta-actions">
+          <a href="seller-dashboard.html" class="btn btn-primary">
+            Launch Demo
+            <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M13 6L19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <a href="seller-dashboard.html" class="btn btn-secondary">
+            View Seller Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-shell">
+        <div class="footer-left">
+          <a href="#top" class="brand" aria-label="ScanBill footer home">
+            <div class="brand-mark" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#456C9C" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M9.2 7.5H14.8C15.35 7.5 15.8 7.95 15.8 8.5V14.4L14.9 13.7L14 14.4L13.1 13.7L12.2 14.4L11.3 13.7L10.4 14.4L9.2 13.5V8.5C9.2 7.95 9.65 7.5 10.2 7.5Z" fill="white" stroke="#456C9C" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M10.7 10.8L11.8 11.9L14.1 9.7" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <strong>ScanBill</strong>
+              <span>Every payment becomes a business record.</span>
+            </div>
+          </a>
+
+          <p>
+            A smart QR payment and billing platform built for local sellers, shopkeepers, and growing small businesses.
+          </p>
+
+          <div class="footer-note">Built for Hackathon 2026</div>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#ai-insights">AI Insights</a>
+          <a href="#demo">Demo</a>
+          <a href="#audience">Who It’s For</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // =========================
+    // NAVBAR SCROLL EFFECT
+    // =========================
+    const navbar = document.querySelector(".navbar");
+
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 20);
+    });
+
+    // =========================
+    // REVEAL ON SCROLL
+    // =========================
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+      }
+    );
+
+    revealElements.forEach((el) => revealObserver.observe(el));
+
+    // =========================
+    // SMOOTH SCROLL FOR NAV LINKS
+    // =========================
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        const targetId = this.getAttribute("href");
+
+        if (targetId.length > 1) {
+          const target = document.querySelector(targetId);
+
+          if (target) {
+            e.preventDefault();
+            const yOffset = -90;
+            const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+            window.scrollTo({
+              top: y,
+              behavior: "smooth",
+            });
+          }
+        }
+      });
+    });
+
+    // =========================
+    // MOBILE MENU SIMPLE FALLBACK
+    // =========================
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.querySelector(".nav-links");
+    const navCTA = document.querySelector(".nav-cta");
+
+    menuToggle?.addEventListener("click", () => {
+      const isOpen = navLinks.style.display === "flex";
+
+      if (!isOpen) {
+        navLinks.style.display = "flex";
+        navLinks.style.position = "absolute";
+        navLinks.style.top = "92px";
+        navLinks.style.left = "20px";
+        navLinks.style.right = "20px";
+        navLinks.style.flexDirection = "column";
+        navLinks.style.padding = "20px";
+        navLinks.style.borderRadius = "24px";
+        navLinks.style.background = "rgba(255,255,255,0.95)";
+        navLinks.style.backdropFilter = "blur(16px)";
+        navLinks.style.border = "1px solid rgba(172,198,230,0.22)";
+        navLinks.style.boxShadow = "0 18px 34px rgba(106, 138, 187, 0.14)";
+        navLinks.style.zIndex = "999";
+        navCTA.style.display = "block";
+        navCTA.style.position = "absolute";
+        navCTA.style.top = "310px";
+        navCTA.style.left = "20px";
+        navCTA.style.right = "20px";
+        navCTA.style.zIndex = "999";
+      } else {
+        navLinks.removeAttribute("style");
+        navCTA.removeAttribute("style");
+      }
+    });
+
+    // Close menu on nav click (mobile)
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 920) {
+          navLinks.removeAttribute("style");
+          navCTA.removeAttribute("style");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bill Details - ScanBill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= DESIGN SYSTEM ================= */
+    :root{
+      --bg:#F8FBFF;
+      --white:#FFFFFF;
+      --card:#FFFFFF;
+
+      --light-blue:#DCEEFF;
+      --primary:#60A5FA;
+      --primary-2:#8B8CFF;
+      --soft-indigo:#A5B4FC;
+      --lavender:#DDD6FE;
+
+      --text:#334155;
+      --muted:#64748B;
+      --border:#E2E8F0;
+
+      --success:#16A34A;
+      --success-soft:#ECFDF3;
+      --success-border:#BBF7D0;
+
+      --radius:16px;
+      --radius-lg:20px;
+
+      --shadow:0 12px 30px rgba(100,130,180,0.12);
+      --shadow-soft:0 8px 24px rgba(96,165,250,0.10);
+      --shadow-hover:0 18px 36px rgba(100,130,180,0.16);
+
+      --transition:all 0.28s ease;
+    }
+
+    /* ================= RESET ================= */
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:"Inter",sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(96,165,250,0.10), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(221,214,254,0.20), transparent 30%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    button{
+      font-family:inherit;
+      border:none;
+      cursor:pointer;
+      background:none;
+    }
+
+    /* ================= PAGE WRAPPER ================= */
+    .page{
+      max-width:920px;
+      margin:0 auto;
+      padding:32px 40px 40px;
+    }
+
+    .section{
+      margin-bottom:28px;
+      animation:fadeUp 0.7s ease both;
+    }
+
+    .section.delay-1{ animation-delay:0.06s; }
+    .section.delay-2{ animation-delay:0.12s; }
+    .section.delay-3{ animation-delay:0.18s; }
+    .section.delay-4{ animation-delay:0.24s; }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(18px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* ================= HEADER ================= */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+    }
+
+    .brand-logo svg{
+      width:22px;
+      height:22px;
+    }
+
+    .page-heading h1{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:6px;
+      line-height:1.15;
+    }
+
+    .page-heading p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.7;
+      max-width:520px;
+    }
+
+    /* ================= BUTTON SYSTEM ================= */
+    .btn{
+      min-height:46px;
+      padding:0 18px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:600;
+      transition:var(--transition);
+      white-space:nowrap;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn:active{
+      transform:translateY(0);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff;
+      box-shadow:0 12px 26px rgba(96,165,250,0.28);
+    }
+
+    .btn-primary:hover{
+      box-shadow:0 16px 30px rgba(96,165,250,0.34);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,0.92);
+      border:1px solid #D8E6F6;
+      color:var(--text);
+      box-shadow:0 4px 12px rgba(120,150,200,0.06);
+    }
+
+    .btn-secondary:hover{
+      background:#F7FBFF;
+    }
+
+    /* ================= GENERIC CARD ================= */
+    .card{
+      background:rgba(255,255,255,0.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:28px;
+      box-shadow:var(--shadow);
+      transition:var(--transition);
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-hover);
+    }
+
+    /* ================= SUCCESS BANNER ================= */
+    .success-banner{
+      display:flex;
+      align-items:flex-start;
+      gap:16px;
+      background:linear-gradient(135deg, rgba(236,253,243,0.98), rgba(255,255,255,0.96));
+      border:1px solid var(--success-border);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .success-banner::before{
+      content:"";
+      position:absolute;
+      top:-40px;
+      right:-30px;
+      width:140px;
+      height:140px;
+      background:radial-gradient(circle, rgba(22,163,74,0.10), transparent 70%);
+      pointer-events:none;
+    }
+
+    .success-icon{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#E7FCEB,#DDF8E5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      box-shadow:0 8px 20px rgba(22,163,74,0.12);
+      animation:successPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes successPulse{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.04)}
+    }
+
+    .success-content{
+      flex:1;
+      min-width:0;
+    }
+
+    .status-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#F3FFF7;
+      color:var(--success);
+      border:1px solid #D3F3DC;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+
+    .success-content h2{
+      font-size:24px;
+      font-weight:800;
+      margin-bottom:8px;
+      letter-spacing:-0.02em;
+    }
+
+    .success-content p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:620px;
+    }
+
+    /* ================= BILL CARD ================= */
+    .bill-card{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .bill-card::before{
+      content:"";
+      position:absolute;
+      top:-60px;
+      left:-50px;
+      width:180px;
+      height:180px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .bill-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:26px;
+      position:relative;
+      z-index:1;
+    }
+
+    .bill-title-wrap{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+
+    .bill-icon{
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      background:linear-gradient(135deg,#EAF4FF,#F2ECFF);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .bill-title h3{
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:6px;
+      letter-spacing:-0.02em;
+    }
+
+    .bill-title p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.7;
+      max-width:480px;
+    }
+
+    .bill-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#EEF6FF;
+      color:var(--primary);
+      font-size:13px;
+      font-weight:700;
+      border:1px solid #DCEBFA;
+      flex-shrink:0;
+    }
+
+    /* ================= META GRID ================= */
+    .meta-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-bottom:28px;
+      position:relative;
+      z-index:1;
+    }
+
+    .meta-card{
+      padding:16px 18px;
+      border-radius:16px;
+      background:#FBFDFF;
+      border:1px solid #E8EFF7;
+      transition:var(--transition);
+    }
+
+    .meta-card:hover{
+      background:#F7FBFF;
+    }
+
+    .meta-label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+      margin-bottom:10px;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+    }
+
+    .meta-value{
+      font-size:15px;
+      font-weight:700;
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .paid-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--success-soft);
+      color:var(--success);
+      border:1px solid #D6F5DE;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .type-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#F3F4FF;
+      color:#6366F1;
+      border:1px solid #E1E5FF;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    /* ================= PARTY INFO ================= */
+    .party-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      margin-bottom:28px;
+      position:relative;
+      z-index:1;
+    }
+
+    .party-box{
+      padding:18px;
+      border-radius:16px;
+      background:#FAFCFF;
+      border:1px solid #E8EFF7;
+    }
+
+    .party-top{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .party-top h4{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .party-name{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .party-sub{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    /* ================= ITEMIZED BILL ================= */
+    .invoice-section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:17px;
+      font-weight:800;
+      margin-bottom:16px;
+      position:relative;
+      z-index:1;
+    }
+
+    .table-wrap{
+      overflow-x:auto;
+      border-radius:18px;
+      border:1px solid #E8EFF7;
+      background:#FCFEFF;
+      position:relative;
+      z-index:1;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:620px;
+    }
+
+    thead{
+      background:linear-gradient(135deg,#F4F9FF,#F7F4FF);
+    }
+
+    th, td{
+      padding:18px 18px;
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    th{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      border-bottom:1px solid #E8EFF7;
+    }
+
+    td{
+      font-size:15px;
+      color:var(--text);
+      border-bottom:1px solid #EDF2F7;
+    }
+
+    tbody tr:last-child td{
+      border-bottom:none;
+    }
+
+    tbody tr:hover{
+      background:#F9FCFF;
+    }
+
+    .item-name{
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .qty-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:38px;
+      height:32px;
+      padding:0 10px;
+      border-radius:999px;
+      background:#EEF6FF;
+      color:var(--primary);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    /* ================= TOTAL SECTION ================= */
+    .totals{
+      margin-top:22px;
+      padding-top:20px;
+      border-top:1px solid #E8EFF7;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+
+    .total-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:15px;
+      color:var(--muted);
+    }
+
+    .total-row strong{
+      color:var(--text);
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .grand-total{
+      margin-top:6px;
+      padding:18px 20px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#F2F8FF,#F7F3FF);
+      border:1px solid #E2ECFA;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      animation:softGlow 2.8s ease-in-out infinite;
+    }
+
+    @keyframes softGlow{
+      0%,100%{box-shadow:0 0 0 rgba(96,165,250,0)}
+      50%{box-shadow:0 10px 24px rgba(96,165,250,0.10)}
+    }
+
+    .grand-total span{
+      font-size:15px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .grand-total strong{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      color:var(--text);
+    }
+
+    /* ================= INVENTORY IMPACT ================= */
+    .impact-card{
+      display:flex;
+      align-items:flex-start;
+      gap:16px;
+      background:linear-gradient(135deg,#F5FAFF,#FBF8FF);
+      border:1px solid #E3EBF7;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .impact-card::after{
+      content:"";
+      position:absolute;
+      right:-24px;
+      bottom:-24px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 70%);
+      pointer-events:none;
+    }
+
+    .impact-icon{
+      width:52px;
+      height:52px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#EAF4FF,#F2ECFF);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .impact-content h3{
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:10px;
+      letter-spacing:-0.02em;
+    }
+
+    .impact-content p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.85;
+      margin-bottom:8px;
+      max-width:640px;
+    }
+
+    .impact-note{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#FFFFFF;
+      border:1px solid #E5EEF9;
+      color:var(--text);
+      font-size:13px;
+      font-weight:600;
+    }
+
+    /* ================= ACTIONS ================= */
+    .actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .actions .btn{
+      min-width:180px;
+    }
+
+    /* ================= FOOTER ================= */
+    .footer{
+      text-align:center;
+      padding-top:8px;
+    }
+
+    .footer-brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .footer-brand .brand-logo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+    }
+
+    .footer p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 900px){
+      .page{
+        padding:24px;
+      }
+    }
+
+    @media (max-width: 768px){
+      .page{
+        padding:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .topbar-right{
+        width:100%;
+      }
+
+      .topbar-right .btn{
+        width:100%;
+      }
+
+      .page-heading h1{
+        font-size:24px;
+      }
+
+      .card{
+        padding:22px;
+      }
+
+      .success-banner{
+        flex-direction:column;
+      }
+
+      .bill-header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .meta-grid,
+      .party-grid{
+        grid-template-columns:1fr;
+      }
+
+      .actions{
+        flex-direction:column;
+      }
+
+      .actions .btn{
+        width:100%;
+        min-width:unset;
+      }
+
+      .grand-total strong{
+        font-size:24px;
+      }
+    }
+
+    @media (max-width: 520px){
+      .page-heading p,
+      .success-content p,
+      .bill-title p,
+      .impact-content p{
+        font-size:13px;
+      }
+
+      .meta-value,
+      td{
+        font-size:14px;
+      }
+
+      .grand-total{
+        padding:16px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+
+    <!-- ================= TOP HEADER ================= -->
+    <section class="section">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-logo">
+            <!-- ScanBill Logo -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="page-heading">
+            <h1>Bill Details</h1>
+            <p>Your digital invoice has been generated successfully</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <a href="dashboard.html" class="btn btn-secondary">
+            <!-- Arrow Left -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SUCCESS BANNER ================= -->
+    <section class="card success-banner section delay-1">
+      <div class="success-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="#16A34A" opacity="0.10"/>
+          <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="success-content">
+        <div class="status-chip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Payment Recorded
+        </div>
+        <h2>Payment Successful</h2>
+        <p>Your bill has been created and saved successfully. This payment is now securely recorded as part of your business transaction history.</p>
+      </div>
+    </section>
+
+    <!-- ================= MAIN BILL CARD ================= -->
+    <section class="card bill-card section delay-2">
+
+      <!-- BILL HEADER -->
+      <div class="bill-header">
+        <div class="bill-title-wrap">
+          <div class="bill-icon">
+            <!-- Bill Icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M8 4H16L19 7V20L17 18.8L15 20L13 18.8L11 20L9 18.8L7 20V5.5C7 4.67 7.67 4 8.5 4H8Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M10 9H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10 12H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="bill-title">
+            <h3>Digital Invoice</h3>
+            <p>A structured record of your completed payment, items billed, and transaction summary.</p>
+          </div>
+        </div>
+
+        <div class="bill-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Official Record
+        </div>
+      </div>
+
+      <!-- META INFO -->
+      <div class="meta-grid">
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- Hash / ID -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M10 4L8 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 4L14 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 9H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 15H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Bill ID
+          </div>
+          <div class="meta-value">SB104</div>
+        </div>
+
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- Calendar -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 3V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 3V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 10H20" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Date
+          </div>
+          <div class="meta-value">05 April 2026</div>
+        </div>
+
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- Clock -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Time
+          </div>
+          <div class="meta-value">06:42 PM</div>
+        </div>
+
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- Payment -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="12" rx="3" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 10H21" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Payment Status
+          </div>
+          <div class="meta-value">
+            <span class="paid-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Paid
+            </span>
+          </div>
+        </div>
+
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- File -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M8 4H15L19 8V20H8C6.9 20 6 19.1 6 18V6C6 4.9 6.9 4 8 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M15 4V8H19" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            Bill Type
+          </div>
+          <div class="meta-value">
+            <span class="type-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 8V12L14.5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Customer Bill
+            </span>
+          </div>
+        </div>
+
+        <div class="meta-card">
+          <div class="meta-label">
+            <!-- Store -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M4 10L5.5 5H18.5L20 10" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M5 10H19V19H5V10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 19V14H15V19" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            Seller
+          </div>
+          <div class="meta-value">ScanBill Store</div>
+        </div>
+      </div>
+
+      <!-- PARTY INFO -->
+      <div class="party-grid">
+        <div class="party-box">
+          <div class="party-top">
+            <!-- Seller Icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 10L5.5 5H18.5L20 10" stroke="#60A5FA" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M5 10H19V19H5V10Z" stroke="#60A5FA" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <h4>Seller</h4>
+          </div>
+          <div class="party-name">ScanBill Store</div>
+          <div class="party-sub">Smart QR billing enabled merchant</div>
+        </div>
+
+        <div class="party-box">
+          <div class="party-top">
+            <!-- Customer Icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="3.2" stroke="#60A5FA" stroke-width="2"/>
+              <path d="M6 19C6.8 16.6 8.9 15 12 15C15.1 15 17.2 16.6 18 19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h4>Customer</h4>
+          </div>
+          <div class="party-name">Walk-in Customer</div>
+          <div class="party-sub">Retail payment completed successfully</div>
+        </div>
+      </div>
+
+      <!-- ITEMIZED BILL -->
+      <div class="invoice-section-title">
+        <!-- List Icon -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M9 7H19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+          <path d="M9 12H19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+          <path d="M9 17H19" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="5" cy="7" r="1.2" fill="#334155"/>
+          <circle cx="5" cy="12" r="1.2" fill="#334155"/>
+          <circle cx="5" cy="17" r="1.2" fill="#334155"/>
+        </svg>
+        Itemized Bill
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td class="item-name">Maggi</td>
+              <td><span class="qty-pill">2</span></td>
+              <td>₹20</td>
+              <td>₹40</td>
+            </tr>
+            <tr>
+              <td class="item-name">Coke</td>
+              <td><span class="qty-pill">1</span></td>
+              <td>₹40</td>
+              <td>₹40</td>
+            </tr>
+            <tr>
+              <td class="item-name">Biscuit</td>
+              <td><span class="qty-pill">3</span></td>
+              <td>₹10</td>
+              <td>₹30</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOTALS -->
+      <div class="totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <strong>₹110</strong>
+        </div>
+        <div class="total-row">
+          <span>Charges / Tax</span>
+          <strong>₹0</strong>
+        </div>
+
+        <div class="grand-total">
+          <span>Final Total</span>
+          <strong>₹110</strong>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= INVENTORY IMPACT ================= -->
+    <section class="card impact-card section delay-3">
+      <div class="impact-icon">
+        <!-- Inventory / Box Icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M12 13V20" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="impact-content">
+        <h3>Inventory Impact</h3>
+        <p>This transaction will <strong>reduce your inventory automatically</strong> because it is marked as a <strong>Customer Bill</strong>. The billed items are now recorded as sold and reflected in your product records.</p>
+        <p>This bill is also saved for <strong>future analytics, stock tracking, and recordkeeping</strong> — making every payment a useful business action, not just a transaction.</p>
+
+        <div class="impact-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 10V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="7.5" r="1" fill="currentColor"/>
+          </svg>
+          Smart business logic applied automatically
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ACTION BUTTONS ================= -->
+    <section class="section delay-4">
+      <div class="actions">
+        <a href="seller-dashboard.html" class="btn btn-primary">
+          <!-- Dashboard Icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="4" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
+            <rect x="13" y="4" width="7" height="4" rx="2" stroke="currentColor" stroke-width="2"/>
+            <rect x="13" y="11" width="7" height="9" rx="2" stroke="currentColor" stroke-width="2"/>
+            <rect x="4" y="14" width="7" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Back to Dashboard
+        </a>
+
+        <button class="btn btn-secondary" onclick="downloadBill()">
+          <!-- Download Icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 4V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8.5 10.5L12 14L15.5 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 18H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Download Bill
+        </button>
+
+        <button class="btn btn-secondary" onclick="shareBill()">
+          <!-- Share Icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M8.7 10.7L15.2 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M8.7 13.3L15.2 17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Share Bill
+        </button>
+
+        <button class="btn btn-secondary" onclick="markAsStockBill(this)">
+          <!-- Refresh / Convert Icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M20 11A8 8 0 1 0 18 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 7V11H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Mark as Stock Bill
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer section">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>ScanBill</span>
+      </div>
+
+      <p>Digital invoice generated securely with ScanBill</p>
+      <p>Built for Hackathon 2026</p>
+    </footer>
+
+  </main>
+
+  <script>
+    function downloadBill(){
+      alert("Bill download simulated successfully.");
+    }
+
+    function shareBill(){
+      alert("Bill sharing simulated successfully.");
+    }
+
+    function markAsStockBill(button){
+      button.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Marked as Stock Bill
+      `;
+      button.style.pointerEvents = "none";
+      button.style.opacity = "0.75";
+    }
+  </script>
+
+</body>
+</html>

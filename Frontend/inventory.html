@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory - ScanBill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= DESIGN SYSTEM ================= */
+    :root{
+      --bg:#F8FBFF;
+      --white:#FFFFFF;
+      --card:#FFFFFF;
+
+      --light-blue:#DCEEFF;
+      --primary:#60A5FA;
+      --primary-2:#8B8CFF;
+      --soft-indigo:#A5B4FC;
+      --lavender:#DDD6FE;
+
+      --text:#334155;
+      --muted:#64748B;
+      --border:#E2E8F0;
+
+      --healthy:#16A34A;
+      --healthy-soft:#ECFDF3;
+      --healthy-border:#BBF7D0;
+
+      --low:#D97706;
+      --low-soft:#FFFBEB;
+      --low-border:#FDE68A;
+
+      --out:#DC2626;
+      --out-soft:#FEF2F2;
+      --out-border:#FECACA;
+
+      --radius:16px;
+      --radius-lg:20px;
+
+      --shadow:0 12px 30px rgba(100,130,180,0.12);
+      --shadow-soft:0 8px 24px rgba(96,165,250,0.10);
+      --shadow-hover:0 18px 36px rgba(100,130,180,0.16);
+
+      --transition:all 0.28s ease;
+    }
+
+    /* ================= RESET ================= */
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:"Inter",sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(96,165,250,0.10), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(221,214,254,0.20), transparent 30%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    button, select, input{
+      font-family:inherit;
+      border:none;
+      outline:none;
+    }
+
+    button{
+      cursor:pointer;
+      background:none;
+    }
+
+    /* ================= PAGE WRAPPER ================= */
+    .page{
+      max-width:1280px;
+      margin:0 auto;
+      padding:32px 40px 40px;
+    }
+
+    .section{
+      margin-bottom:28px;
+      animation:fadeUp 0.7s ease both;
+    }
+
+    .section.delay-1{ animation-delay:0.06s; }
+    .section.delay-2{ animation-delay:0.12s; }
+    .section.delay-3{ animation-delay:0.18s; }
+    .section.delay-4{ animation-delay:0.24s; }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(18px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    /* ================= HEADER ================= */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+
+    .topbar-left{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+    }
+
+    .brand-logo svg{
+      width:22px;
+      height:22px;
+    }
+
+    .page-heading h1{
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:6px;
+      line-height:1.15;
+    }
+
+    .page-heading p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+      max-width:620px;
+    }
+
+    .topbar-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* ================= BUTTON SYSTEM ================= */
+    .btn{
+      min-height:46px;
+      padding:0 18px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:600;
+      transition:var(--transition);
+      white-space:nowrap;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn:active{
+      transform:translateY(0);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      color:#fff;
+      box-shadow:0 12px 26px rgba(96,165,250,0.28);
+    }
+
+    .btn-primary:hover{
+      box-shadow:0 16px 30px rgba(96,165,250,0.34);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,0.92);
+      border:1px solid #D8E6F6;
+      color:var(--text);
+      box-shadow:0 4px 12px rgba(120,150,200,0.06);
+    }
+
+    .btn-secondary:hover{
+      background:#F7FBFF;
+    }
+
+    .btn-sm{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    /* ================= GENERIC CARD ================= */
+    .card{
+      background:rgba(255,255,255,0.94);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:28px;
+      box-shadow:var(--shadow);
+      transition:var(--transition);
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-hover);
+    }
+
+    /* ================= OVERVIEW CARDS ================= */
+    .overview-grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:18px;
+    }
+
+    .overview-card{
+      min-height:170px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .overview-card::before{
+      content:"";
+      position:absolute;
+      top:-45px;
+      right:-35px;
+      width:120px;
+      height:120px;
+      background:radial-gradient(circle, rgba(96,165,250,0.10), transparent 72%);
+      pointer-events:none;
+    }
+
+    .overview-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .overview-icon{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:var(--shadow-soft);
+      flex-shrink:0;
+    }
+
+    .overview-icon.blue{
+      background:linear-gradient(135deg,#EAF4FF,#F2ECFF);
+    }
+
+    .overview-icon.green{
+      background:linear-gradient(135deg,#EAFBF1,#F4FFF7);
+    }
+
+    .overview-icon.amber{
+      background:linear-gradient(135deg,#FFF7E6,#FFFDF5);
+    }
+
+    .overview-icon.red{
+      background:linear-gradient(135deg,#FFF1F1,#FFF8F8);
+    }
+
+    .overview-label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .overview-value{
+      font-size:38px;
+      font-weight:800;
+      line-height:1;
+      letter-spacing:-0.03em;
+      margin-bottom:10px;
+    }
+
+    .overview-note{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    /* ================= CONTROLS ================= */
+    .controls-card{
+      padding:22px 24px;
+    }
+
+    .controls-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    .search-wrap{
+      flex:1;
+      min-width:280px;
+      position:relative;
+    }
+
+    .search-wrap svg{
+      position:absolute;
+      left:16px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--muted);
+      pointer-events:none;
+    }
+
+    .search-input{
+      width:100%;
+      height:50px;
+      border-radius:16px;
+      border:1px solid #DCE8F5;
+      background:#FBFDFF;
+      padding:0 18px 0 46px;
+      font-size:14px;
+      color:var(--text);
+      transition:var(--transition);
+      box-shadow:0 4px 12px rgba(120,150,200,0.04);
+    }
+
+    .search-input:focus{
+      border-color:var(--primary);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(96,165,250,0.12);
+    }
+
+    .filters-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .filter-chip{
+      min-height:42px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid #DCE8F5;
+      background:#FFFFFF;
+      color:var(--text);
+      font-size:13px;
+      font-weight:700;
+      transition:var(--transition);
+    }
+
+    .filter-chip:hover{
+      transform:translateY(-1px);
+      background:#F7FBFF;
+    }
+
+    .filter-chip.active{
+      background:linear-gradient(135deg,#EAF4FF,#F2ECFF);
+      border-color:#CFE0F4;
+      color:var(--primary);
+    }
+
+    .sort-wrap{
+      min-width:220px;
+    }
+
+    .sort-select{
+      width:100%;
+      height:50px;
+      border-radius:16px;
+      border:1px solid #DCE8F5;
+      background:#FBFDFF;
+      padding:0 16px;
+      font-size:14px;
+      color:var(--text);
+      cursor:pointer;
+      transition:var(--transition);
+      box-shadow:0 4px 12px rgba(120,150,200,0.04);
+    }
+
+    .sort-select:focus{
+      border-color:var(--primary);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(96,165,250,0.12);
+    }
+
+    /* ================= INVENTORY TABLE ================= */
+    .inventory-card{
+      overflow:hidden;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:20px;
+      flex-wrap:wrap;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+
+    .section-sub{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.7;
+      margin-top:6px;
+    }
+
+    .inventory-table-wrap{
+      overflow-x:auto;
+      border:1px solid #E8EFF7;
+      border-radius:18px;
+      background:#FCFEFF;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    thead{
+      background:linear-gradient(135deg,#F4F9FF,#F7F4FF);
+    }
+
+    th, td{
+      padding:18px 18px;
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    th{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      border-bottom:1px solid #E8EFF7;
+    }
+
+    td{
+      font-size:14px;
+      color:var(--text);
+      border-bottom:1px solid #EDF2F7;
+    }
+
+    tbody tr:last-child td{
+      border-bottom:none;
+    }
+
+    tbody tr{
+      transition:var(--transition);
+    }
+
+    tbody tr:hover{
+      background:#F9FCFF;
+    }
+
+    .item-cell{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:220px;
+    }
+
+    .item-icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#EAF4FF,#F2ECFF);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .item-name{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .item-meta{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .category-chip{
+      display:inline-flex;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#F4F8FD;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      border:1px solid #E4ECF6;
+    }
+
+    .qty-value{
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
+
+    .qty-sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .status-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 13px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .status-healthy{
+      background:var(--healthy-soft);
+      color:var(--healthy);
+      border-color:var(--healthy-border);
+    }
+
+    .status-low{
+      background:var(--low-soft);
+      color:var(--low);
+      border-color:var(--low-border);
+    }
+
+    .status-out{
+      background:var(--out-soft);
+      color:var(--out);
+      border-color:var(--out-border);
+    }
+
+    .last-updated{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.7;
+      min-width:130px;
+    }
+
+    .row-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+      min-width:260px;
+    }
+
+    /* ================= RESTOCK PANEL ================= */
+    .restock-panel{
+      display:grid;
+      grid-template-columns:1.25fr 1fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .restock-main{
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(135deg,#FFF9ED,#FFFFFF);
+      border:1px solid #F8E7C0;
+    }
+
+    .restock-main::after{
+      content:"";
+      position:absolute;
+      right:-30px;
+      bottom:-30px;
+      width:140px;
+      height:140px;
+      background:radial-gradient(circle, rgba(217,119,6,0.10), transparent 70%);
+      pointer-events:none;
+    }
+
+    .restock-top{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .restock-icon{
+      width:52px;
+      height:52px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#FFF1D8,#FFF8EA);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      box-shadow:0 8px 20px rgba(217,119,6,0.10);
+    }
+
+    .restock-content h3{
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:8px;
+    }
+
+    .restock-content p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:620px;
+    }
+
+    .restock-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .restock-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px 18px;
+      border-radius:16px;
+      background:#FFFDF8;
+      border:1px solid #F6E9C9;
+      transition:var(--transition);
+    }
+
+    .restock-item:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 20px rgba(217,119,6,0.08);
+    }
+
+    .restock-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .restock-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:#F59E0B;
+      box-shadow:0 0 0 6px rgba(245,158,11,0.10);
+      flex-shrink:0;
+    }
+
+    .restock-item-name{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .restock-item-sub{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .restock-side{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .mini-panel{
+      min-height:100%;
+    }
+
+    .mini-panel h4{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:10px;
+      letter-spacing:-0.02em;
+    }
+
+    .mini-panel p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+      margin-bottom:16px;
+    }
+
+    .mini-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .mini-list-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:#FAFCFF;
+      border:1px solid #E8EFF7;
+    }
+
+    .mini-list-item strong{
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .mini-list-item span{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    /* ================= FOOTER ================= */
+    .footer{
+      text-align:center;
+      padding-top:8px;
+    }
+
+    .footer-brand{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    .footer-brand .brand-logo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+    }
+
+    .footer p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.8;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 1180px){
+      .overview-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+
+      .restock-panel{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 900px){
+      .page{
+        padding:24px;
+      }
+
+      .controls-wrap{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .sort-wrap{
+        width:100%;
+        min-width:unset;
+      }
+    }
+
+    @media (max-width: 768px){
+      .page{
+        padding:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .topbar-actions{
+        width:100%;
+      }
+
+      .topbar-actions .btn{
+        flex:1;
+      }
+
+      .page-heading h1{
+        font-size:26px;
+      }
+
+      .card{
+        padding:22px;
+      }
+
+      .overview-grid{
+        grid-template-columns:1fr;
+      }
+
+      .filters-group{
+        width:100%;
+      }
+
+      .filter-chip{
+        flex:1;
+        justify-content:center;
+      }
+    }
+
+    @media (max-width: 520px){
+      .page-heading p,
+      .section-sub,
+      .restock-content p,
+      .mini-panel p{
+        font-size:13px;
+      }
+
+      .overview-value{
+        font-size:34px;
+      }
+
+      .topbar-actions{
+        flex-direction:column;
+      }
+
+      .topbar-actions .btn{
+        width:100%;
+      }
+
+      .restock-item,
+      .mini-list-item{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="page">
+
+    <!-- ================= TOP HEADER ================= -->
+    <section class="section">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand-logo">
+            <!-- ScanBill Logo -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="page-heading">
+            <h1>Inventory</h1>
+            <p>Track stock, manage items, and identify what needs restocking</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="seller-dashboard.html" class="btn btn-secondary">
+            <!-- Back -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Dashboard
+          </a>
+
+          <button class="btn btn-primary" onclick="addItem()">
+            <!-- Plus -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Add Item
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OVERVIEW CARDS ================= -->
+    <section class="overview-grid section delay-1">
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon blue">
+            <!-- Package -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12 13V20" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Total Products</div>
+          <div class="overview-value" id="totalProducts">24</div>
+          <div class="overview-note">All currently listed products in your inventory.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon amber">
+            <!-- Alert -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 9V13" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="17" r="1" fill="#D97706"/>
+              <path d="M10.3 4.9L3.8 16.3C3.1 17.6 4 19.2 5.5 19.2H18.5C20 19.2 20.9 17.6 20.2 16.3L13.7 4.9C13 3.7 11 3.7 10.3 4.9Z" stroke="#D97706" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Low Stock Items</div>
+          <div class="overview-value" id="lowStockCount">5</div>
+          <div class="overview-note">Products that may need restocking soon.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon red">
+            <!-- Out -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8.5" stroke="#DC2626" stroke-width="1.8"/>
+              <path d="M9 9L15 15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+              <path d="M15 9L9 15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Out of Stock</div>
+          <div class="overview-value" id="outStockCount">2</div>
+          <div class="overview-note">Products unavailable for sale right now.</div>
+        </div>
+      </div>
+
+      <div class="card overview-card">
+        <div class="overview-top">
+          <div class="overview-icon green">
+            <!-- Units -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M6 12H18" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 8H15" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M9 16H15" stroke="#16A34A" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="overview-label">Total Units in Stock</div>
+          <div class="overview-value" id="totalUnits">142</div>
+          <div class="overview-note">Combined stock quantity across all active items.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTROLS ================= -->
+    <section class="card controls-card section delay-2">
+      <div class="controls-wrap">
+
+        <div class="search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 20L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search items by name">
+        </div>
+
+        <div class="filters-group" id="filterGroup">
+          <button class="filter-chip active" data-filter="all">All Items</button>
+          <button class="filter-chip" data-filter="healthy">Healthy Stock</button>
+          <button class="filter-chip" data-filter="low">Low Stock</button>
+          <button class="filter-chip" data-filter="out">Out of Stock</button>
+        </div>
+
+        <div class="sort-wrap">
+          <select class="sort-select" id="sortSelect">
+            <option value="high">Quantity High to Low</option>
+            <option value="low">Quantity Low to High</option>
+            <option value="recent">Recently Updated</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= MAIN INVENTORY ================= -->
+    <section class="card inventory-card section delay-3">
+      <div class="section-head">
+        <div>
+          <div class="section-title">
+            <!-- Inventory icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12 13V20" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Inventory Items
+          </div>
+          <div class="section-sub">A clean view of your current stock levels and item status.</div>
+        </div>
+      </div>
+
+      <div class="inventory-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="inventoryTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= RESTOCK PANEL ================= -->
+    <section class="restock-panel section delay-4">
+      <div class="card restock-main">
+        <div class="restock-top">
+          <div class="restock-icon">
+            <!-- Warning -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 9V13" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="17" r="1" fill="#D97706"/>
+              <path d="M10.3 4.9L3.8 16.3C3.1 17.6 4 19.2 5.5 19.2H18.5C20 19.2 20.9 17.6 20.2 16.3L13.7 4.9C13 3.7 11 3.7 10.3 4.9Z" stroke="#D97706" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="restock-content">
+            <h3>Restock Attention Needed</h3>
+            <p>Keeping these items updated can help avoid missed sales and ensure smooth day-to-day business operations.</p>
+          </div>
+        </div>
+
+        <div class="restock-list" id="restockList"></div>
+      </div>
+
+      <div class="restock-side">
+        <div class="card mini-panel">
+          <h4>Inventory Intelligence</h4>
+          <p>ScanBill automatically reflects stock movement when bills are created, helping sellers stay updated without manual tracking.</p>
+
+          <div class="mini-list">
+            <div class="mini-list-item">
+              <div>
+                <strong>Billing Sync</strong>
+                <span>Stock updates after every sale</span>
+              </div>
+              <span>Active</span>
+            </div>
+
+            <div class="mini-list-item">
+              <div>
+                <strong>Low Stock Alerts</strong>
+                <span>Early attention for fast-selling items</span>
+              </div>
+              <span>Enabled</span>
+            </div>
+
+            <div class="mini-list-item">
+              <div>
+                <strong>Restock Visibility</strong>
+                <span>Identify items needing action faster</span>
+              </div>
+              <span>Live</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer section">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 9V6.8C5 5.81 5.81 5 6.8 5H9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M15 5H17.2C18.19 5 19 5.81 19 6.8V9" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M19 15V17.2C19 18.19 18.19 19 17.2 19H15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M9 19H6.8C5.81 19 5 18.19 5 17.2V15" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M10.7 12.1L11.9 13.3L14.4 10.8" stroke="#60A5FA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>ScanBill</span>
+      </div>
+
+      <p>Inventory records are updated automatically through ScanBill billing</p>
+      <p>Built for Hackathon 2026</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const inventoryItems = [
+      { name:"Maggi", category:"Snacks", qty:12, status:"low", updated:"2 hours ago" },
+      { name:"Coke", category:"Beverages", qty:20, status:"healthy", updated:"Today, 11:20 AM" },
+      { name:"Biscuit", category:"Grocery", qty:4, status:"low", updated:"Today, 09:15 AM" },
+      { name:"Chips", category:"Snacks", qty:0, status:"out", updated:"Yesterday" },
+      { name:"Milk", category:"Dairy", qty:8, status:"healthy", updated:"Today, 08:40 AM" },
+      { name:"Bread", category:"Bakery", qty:2, status:"low", updated:"1 hour ago" },
+      { name:"Soap", category:"Essentials", qty:16, status:"healthy", updated:"Today, 10:02 AM" },
+      { name:"Shampoo", category:"Personal Care", qty:0, status:"out", updated:"2 days ago" }
+    ];
+
+    const tableBody = document.getElementById("inventoryTableBody");
+    const restockList = document.getElementById("restockList");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const filterButtons = document.querySelectorAll(".filter-chip");
+
+    let currentFilter = "all";
+
+    function getStatusBadge(status){
+      if(status === "healthy"){
+        return `<span class="status-badge status-healthy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M8 12.5L10.7 15.2L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Healthy
+        </span>`;
+      }
+
+      if(status === "low"){
+        return `<span class="status-badge status-low">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="17" r="1" fill="currentColor"/>
+          </svg>
+          Low Stock
+        </span>`;
+      }
+
+      return `<span class="status-badge status-out">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Out of Stock
+      </span>`;
+    }
+
+    function getItemIcon(category){
+      return `
+        <div class="item-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M4 8.5L12 4L20 8.5L12 13L4 8.5Z" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M4 8.5V15.5L12 20L20 15.5V8.5" stroke="#60A5FA" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M12 13V20" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+      `;
+    }
+
+    function renderTable(){
+      let items = [...inventoryItems];
+
+      const searchTerm = searchInput.value.toLowerCase().trim();
+
+      if(currentFilter !== "all"){
+        items = items.filter(item => item.status === currentFilter);
+      }
+
+      if(searchTerm){
+        items = items.filter(item => item.name.toLowerCase().includes(searchTerm));
+      }
+
+      const sortValue = sortSelect.value;
+
+      if(sortValue === "high"){
+        items.sort((a,b) => b.qty - a.qty);
+      } else if(sortValue === "low"){
+        items.sort((a,b) => a.qty - b.qty);
+      }
+
+      tableBody.innerHTML = items.map(item => `
+        <tr>
+          <td>
+            <div class="item-cell">
+              ${getItemIcon(item.category)}
+              <div>
+                <div class="item-name">${item.name}</div>
+                <div class="item-meta">Tracked through ScanBill billing</div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="category-chip">${item.category}</span>
+          </td>
+
+          <td>
+            <div class="qty-value">${item.qty}</div>
+            <div class="qty-sub">units available</div>
+          </td>
+
+          <td>${getStatusBadge(item.status)}</td>
+
+          <td>
+            <div class="last-updated">${item.updated}</div>
+          </td>
+
+          <td>
+            <div class="row-actions">
+              <button class="btn btn-primary btn-sm" onclick="updateStock('${item.name}')">Update Stock</button>
+              <button class="btn btn-secondary btn-sm" onclick="editItem('${item.name}')">Edit Item</button>
+              <button class="btn btn-secondary btn-sm" onclick="viewDetails('${item.name}')">View Details</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+
+      renderRestock(items);
+    }
+
+    function renderRestock(items){
+      const lowItems = inventoryItems.filter(item => item.status === "low" || item.status === "out");
+
+      restockList.innerHTML = lowItems.slice(0,3).map(item => `
+        <div class="restock-item">
+          <div class="restock-left">
+            <div class="restock-dot"></div>
+            <div>
+              <div class="restock-item-name">${item.name}</div>
+              <div class="restock-item-sub">
+                ${item.status === "out" ? "Out of stock — restock immediately" : `${item.qty} units left — running low`}
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm" onclick="restockItem('${item.name}')">Restock</button>
+        </div>
+      `).join("");
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderTable();
+      });
+    });
+
+    searchInput.addEventListener("input", renderTable);
+    sortSelect.addEventListener("change", renderTable);
+
+    function addItem(){
+      alert("Add Item action simulated.");
+    }
+
+    function updateStock(name){
+      alert(`Update Stock clicked for ${name}`);
+    }
+
+    function editItem(name){
+      alert(`Edit Item clicked for ${name}`);
+    }
+
+    function viewDetails(name){
+      alert(`Viewing details for ${name}`);
+    }
+
+    function restockItem(name){
+      alert(`Restock action started for ${name}`);
+    }
+
+    renderTable();
+  </script>
+
+</body>
+</html>

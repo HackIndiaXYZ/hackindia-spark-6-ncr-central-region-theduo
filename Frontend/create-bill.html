@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Bill - ScanBill</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= DESIGN SYSTEM ================= */
+:root{
+  --bg:#F8FBFF;
+  --white:#ffffff;
+
+  --primary:#60A5FA;
+  --primary2:#8B8CFF;
+
+  --text:#334155;
+  --muted:#64748B;
+
+  --border:#E2E8F0;
+
+  --radius:16px;
+  --radius-lg:20px;
+
+  --shadow:0 10px 30px rgba(100,130,180,0.12);
+}
+
+/* ================= RESET ================= */
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:"Inter",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ================= LAYOUT ================= */
+.page{
+  padding:32px 40px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:28px;
+}
+
+/* ================= HEADER ================= */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-box{
+  width:42px;height:42px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#CFE5FF,#DDD6FE);
+  display:flex;align-items:center;justify-content:center;
+}
+
+.title h2{font-size:20px}
+.title p{font-size:13px;color:var(--muted)}
+
+.header-right{
+  display:flex;
+  gap:12px;
+}
+
+/* ================= BUTTONS ================= */
+.btn{
+  height:42px;
+  padding:0 18px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  color:white;
+}
+
+.btn-secondary{
+  background:white;
+  border:1px solid var(--border);
+}
+
+/* ================= CARDS ================= */
+.card{
+  background:white;
+  border-radius:var(--radius-lg);
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+
+/* ================= BILL TYPE ================= */
+.bill-type{
+  display:flex;
+  gap:16px;
+}
+
+.bill-option{
+  flex:1;
+  padding:18px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  cursor:pointer;
+}
+
+.bill-option.active{
+  border:2px solid var(--primary);
+  background:#EFF6FF;
+}
+
+/* ================= SEARCH ================= */
+.search{
+  margin:20px 0;
+}
+
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+}
+
+/* ================= PRODUCTS ================= */
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:16px;
+}
+
+.product{
+  padding:16px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  text-align:center;
+  transition:0.2s;
+}
+
+.product:hover{
+  transform:translateY(-3px);
+}
+
+.qty{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+.qty button{
+  width:28px;height:28px;
+  border:none;
+  border-radius:8px;
+  background:#E0F2FE;
+  cursor:pointer;
+}
+
+/* ================= SUMMARY ================= */
+.summary{
+  position:sticky;
+  top:20px;
+}
+
+.item-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.total{
+  font-size:22px;
+  font-weight:700;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-box">✓</div>
+    <div class="title">
+      <h2>Create Bill</h2>
+      <p>Select items, generate amount, and create bill</p>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <a href="dashboard.html" class="btn btn-secondary">Back</a>
+  </div>
+</div>
+
+<div class="grid">
+
+<!-- LEFT SIDE -->
+<div>
+
+<!-- BILL TYPE -->
+<div class="card">
+  <h3>Bill Type</h3>
+  <div class="bill-type">
+    <div class="bill-option active" onclick="selectType(this)">Customer Bill</div>
+    <div class="bill-option" onclick="selectType(this)">Stock Bill</div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search">
+  <input placeholder="Search items...">
+</div>
+
+<!-- PRODUCTS -->
+<div class="products">
+
+<div class="product" data-name="Maggi" data-price="20">
+  Maggi ₹20
+  <div class="qty">
+    <button onclick="changeQty(this,-1)">-</button>
+    <span>0</span>
+    <button onclick="changeQty(this,1)">+</button>
+  </div>
+</div>
+
+<div class="product" data-name="Coke" data-price="40">
+  Coke ₹40
+  <div class="qty">
+    <button onclick="changeQty(this,-1)">-</button>
+    <span>0</span>
+    <button onclick="changeQty(this,1)">+</button>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+<!-- RIGHT SIDE -->
+<div class="summary">
+
+<div class="card">
+  <h3>Bill Summary</h3>
+
+  <div id="items"></div>
+
+  <hr style="margin:12px 0">
+
+  <div class="item-row">
+    <span>Total</span>
+    <span id="total">₹0</span>
+  </div>
+
+  <div style="margin-top:16px;">
+    <a href="qr-page.html" class="btn btn-primary" style="width:100%">Generate Smart QR</a>
+  </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let items = {}
+
+function changeQty(btn, val){
+  let span = btn.parentElement.children[1]
+  let qty = parseInt(span.innerText)
+  qty += val
+  if(qty<0) qty=0
+  span.innerText = qty
+
+  let card = btn.closest(".product")
+  let name = card.dataset.name
+  let price = parseInt(card.dataset.price)
+
+  if(qty>0){
+    items[name]={qty,price}
+  } else {
+    delete items[name]
+  }
+
+  updateSummary()
+}
+
+function updateSummary(){
+  let container=document.getElementById("items")
+  let total=0
+  container.innerHTML=""
+
+  for(let key in items){
+    let item=items[key]
+    let sub=item.qty*item.price
+    total+=sub
+
+    container.innerHTML+=`
+      <div class="item-row">
+        <span>${key} x${item.qty}</span>
+        <span>₹${sub}</span>
+      </div>
+    `
+  }
+
+  document.getElementById("total").innerText="₹"+total
+}
+
+function selectType(el){
+  document.querySelectorAll(".bill-option").forEach(e=>e.classList.remove("active"))
+  el.classList.add("active")
+}
+
+</script>
+
+</body>
+</html>
